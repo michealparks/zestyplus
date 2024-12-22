@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { Color } from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { Text, Outlines } from '@threlte/extras'
-	import { useTrack, useAnalyser } from '$lib'
+	import { Outlines } from '@threlte/extras'
+	import { useAnalyser, hueShift } from '$lib'
 
 	const { size } = useThrelte()
-	const { track } = useTrack()
 	const { frequencyData } = useAnalyser()
 
 	const count = 16
@@ -26,17 +25,17 @@
 		}
 	})
 
-	const color = new Color()
+	const color = new Color('red')
 </script>
 
 <T.OrthographicCamera
 	makeDefault
 	position={[-28, 60, 65]}
-	zoom={$size.width / 30}
+	zoom={$size.width / 40}
 	oncreate={(ref) => ref.lookAt(0, 0, 0)}
 />
 
-<T.AmbientLight intensity={0.25} />
+<T.AmbientLight intensity={0.5} />
 
 <T.DirectionalLight
 	castShadow
@@ -46,7 +45,7 @@
 	shadow.camera.bottom={-15}
 	shadow.mapSize.width={2048}
 	shadow.mapSize.height={2048}
-	intensity={2}
+	intensity={3}
 	position={[10, 10, 10]}
 />
 
@@ -69,25 +68,7 @@
 		receiveShadow
 	>
 		<T.BoxGeometry args={[0.5, 0.5, 0.5]} />
-		<T.MeshStandardMaterial color={color.setRGB(index / 10, index / 100, 0)} />
+		<T.MeshStandardMaterial color={hueShift(color, index / 10000)} />
 		<Outlines color="black" />
 	</T.Mesh>
 {/each}
-
-<Text
-	text={track.current?.item.name ?? ''}
-	color="black"
-	scale={10}
-	rotation.x={-Math.PI / 2}
-	position.x={-8}
-	position.z={8}
-/>
-
-<Text
-	text={track.current?.item.artists[0].name ?? ''}
-	color="black"
-	scale={6}
-	rotation.x={-Math.PI / 2}
-	position.x={-8}
-	position.z={9.5}
-/>

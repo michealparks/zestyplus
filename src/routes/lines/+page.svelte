@@ -2,16 +2,17 @@
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { Grid } from '@threlte/extras'
 	import { Line2, LineMaterial, LineGeometry } from 'three/addons'
-	import { hueShift, shiftAndAddVector } from './utils'
+	import { shiftAndAddVector } from './utils'
+	import { hueShift } from '$lib/color'
 	import { useAnalyser } from '$lib'
-	import { Color } from 'three'
+	import { Color, Mesh } from 'three'
 
 	const { frequencyData } = useAnalyser()
 	const { camera } = useThrelte()
 
 	let numLines = 60
 	let lineLength = 350
-	let grid
+	let grid: Mesh
 
 	const color = new Color('red')
 

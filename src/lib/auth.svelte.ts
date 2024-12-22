@@ -5,8 +5,12 @@ const redirectUrl = 'http://localhost:5173' // your redirect URL - must be local
 
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize'
 const tokenEndpoint = 'https://accounts.spotify.com/api/token'
-const scope =
-	'user-read-private user-read-email user-read-playback-state user-read-currently-playing'
+const scope = [
+	'user-read-private',
+	'user-read-email',
+	'user-read-playback-state',
+	'user-read-currently-playing',
+].join(' ')
 
 export interface Token {
 	access: string
@@ -49,8 +53,8 @@ const redirectToSpotifyAuthorize = async () => {
 	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 	const randomValues = crypto.getRandomValues(new Uint8Array(64))
 	const randomString = randomValues.reduce((acc, x) => acc + possible[x % possible.length], '')
-	const code_verifier = randomString
-	const data = new TextEncoder().encode(code_verifier)
+	const codeVerifier = randomString
+	const data = new TextEncoder().encode(codeVerifier)
 	const hashed = await crypto.subtle.digest('SHA-256', data)
 
 	const code_challenge_base64 = btoa(String.fromCharCode(...new Uint8Array(hashed)))
@@ -58,7 +62,7 @@ const redirectToSpotifyAuthorize = async () => {
 		.replace(/\+/g, '-')
 		.replace(/\//g, '_')
 
-	window.localStorage.setItem('code_verifier', code_verifier)
+	window.localStorage.setItem('code_verifier', codeVerifier)
 
 	const authUrl = new URL(authorizationEndpoint)
 	const params = {
@@ -82,9 +86,7 @@ const getToken = async (code: string) => {
 
 	const response = await fetch(tokenEndpoint, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body: new URLSearchParams({
 			client_id: clientId,
 			grant_type: 'authorization_code',
@@ -96,17 +98,13 @@ const getToken = async (code: string) => {
 
 	const token = await response.json()
 
-	console.log('token', token)
-
 	return token
 }
 
 const refreshToken = async () => {
 	const response = await fetch(tokenEndpoint, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body: new URLSearchParams({
 			client_id: clientId,
 			grant_type: 'refresh_token',
@@ -123,9 +121,7 @@ const refreshToken = async () => {
 
 const getUserData = async () => {
 	const response = await fetch('https://api.spotify.com/v1/me', {
-		headers: {
-			Authorization: `Bearer ${token.access}`,
-		},
+		headers: { Authorization: `Bearer ${token.access}` },
 	})
 
 	return response.json()

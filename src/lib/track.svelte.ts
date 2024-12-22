@@ -5,6 +5,7 @@ export interface TrackInfo {
 		id: string
 		name: string
 		album: {
+			name: string
 			images: [
 				{
 					height: number
@@ -60,10 +61,7 @@ const fetchCurrentlyPlayingTrack = async (token: Token): Promise<TrackInfo | und
 
 const startTrackFetchLoop = async (token: Token) => {
 	const response = await fetchCurrentlyPlayingTrack(token)
-
 	track.current = response
-
-	console.log(response)
 
 	if (response === undefined) {
 		setTimeout(startTrackFetchLoop, 3000, token)

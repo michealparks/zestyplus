@@ -13,7 +13,7 @@
 	</button>
 {/snippet}
 
-<div class="absolute bottom-0 left-0">
+<div>
 	{#if authenticated.current === 'pending'}
 		...
 	{:else if authenticated.current === 'logged-in'}
