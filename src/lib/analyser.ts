@@ -6,6 +6,8 @@ const frequencyData = {
 	current: new Uint8Array(),
 }
 
+const fttSize = 1024
+
 const createAnalyser = async () => {
 	// 1. Get access to the user's microphone
 	const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -20,7 +22,7 @@ const createAnalyser = async () => {
 	analyser.current = audioContext.createAnalyser()
 
 	// Adjust for resolution (128, 256, 512, etc.)
-	analyser.current.fftSize = 1024
+	analyser.current.fftSize = fttSize
 
 	// Connect the source to the analyser
 	source.connect(analyser.current)
@@ -56,6 +58,7 @@ const startAnalyser = async () => {
 
 export const useAnalyser = () => {
 	return {
+		fttSize,
 		frequencyData,
 		startAnalyser,
 	}

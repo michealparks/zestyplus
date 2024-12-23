@@ -25,7 +25,7 @@
 	<Canvas>
 		<Postprocessing />
 		<World>
-			<svelte:boundary onerror={() => goto('/bar-grid')}>{@render children()}</svelte:boundary>
+			{@render children()}
 		</World>
 	</Canvas>
 </div>
