@@ -26,7 +26,7 @@
 	onclick={() => (open.current = !open.current)}
 >
 	<svg
-		class="h-full"
+		class="h-full fill-white"
 		viewBox="0 0 32 32"
 	>
 		<path

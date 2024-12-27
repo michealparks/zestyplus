@@ -55,7 +55,7 @@
 	receiveShadow
 >
 	<T.PlaneGeometry args={[50, 50]} />
-	<T.MeshStandardMaterial color="white" />
+	<T.MeshStandardMaterial color="black" />
 </T.Mesh>
 
 {#each positions as position, index}
