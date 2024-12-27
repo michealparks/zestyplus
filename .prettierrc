@@ -3,7 +3,7 @@
 	"singleQuote": true,
 	"trailingComma": "es5",
 	"semi": false,
-	"printWidth": 100,
+	"printWidth": 80,
 	"singleAttributePerLine": true,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
 	"overrides": [

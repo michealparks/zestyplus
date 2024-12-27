@@ -12,24 +12,28 @@
 
 	let numLines = 60
 	let lineLength = 350
-	let grid: Mesh
+	let grid = $state<Mesh>()
 
 	const color = new Color('red')
 
 	const lines: {
 		id: string
-		geo: LineGeometry
+		geometry: LineGeometry
+		material: LineMaterial
 		positions: Float32Array
 	}[] = []
 
 	for (let i = 0; i < numLines; i += 1) {
+		const geometry = new LineGeometry()
+		const material = new LineMaterial()
+
 		const positions = new Float32Array(lineLength * 3)
-		const geo = new LineGeometry()
-		geo.setPositions(positions)
+		geometry.setPositions(positions)
 
 		lines.push({
 			id: crypto.randomUUID(),
-			geo,
+			geometry,
+			material,
 			positions,
 		})
 	}
@@ -37,14 +41,22 @@
 	useTask((delta) => {
 		const speed = delta * 8
 		const z = (camera.current.position.z -= speed)
-		grid.position.z = z
+
+		if (grid !== undefined) {
+			grid.position.z = z
+		}
 
 		for (let i = 0, l = lines.length; i < l; i += 1) {
 			const line = lines[i]
 			const dir = i % 2 === 0 ? 1 : -1
-			const x = (frequencyData.current[i] / 20) * dir
+			const fft = frequencyData.current[i]
+
+			if (fft === undefined) continue
+
+			const x = (fft / 20) * dir
+
 			shiftAndAddVector(line.positions, x, i / 5, z - 10)
-			line.geo.setPositions(line.positions)
+			line.geometry.setPositions(line.positions)
 		}
 	})
 </script>
@@ -53,7 +65,10 @@
 	makeDefault
 	fov={100}
 	position={[0, 4, 10]}
-	oncreate={(ref) => ref.lookAt(0, 2, 0)}
+	oncreate={(ref) => {
+		console.log('here')
+		ref.lookAt(0, 2, 0)
+	}}
 />
 
 <Grid
@@ -68,10 +83,11 @@
 {#each lines as line, index (line.id)}
 	<T is={Line2}>
 		<T
-			is={LineMaterial}
+			is={line.material}
+			transparent
 			linewidth={1.5}
 			color={hueShift(color, index / 2000)}
 		/>
-		<T is={line.geo} />
+		<T is={line.geometry} />
 	</T>
 {/each}

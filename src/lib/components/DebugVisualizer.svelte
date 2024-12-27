@@ -41,4 +41,5 @@
 	height="50"
 	width="50"
 	bind:this={canvas}
-></canvas>
+>
+</canvas>

@@ -50,14 +50,20 @@ const saveToken = (nextToken: {
 }
 
 const redirectToSpotifyAuthorize = async () => {
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	const possible =
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 	const randomValues = crypto.getRandomValues(new Uint8Array(64))
-	const randomString = randomValues.reduce((acc, x) => acc + possible[x % possible.length], '')
+	const randomString = randomValues.reduce(
+		(acc, x) => acc + possible[x % possible.length],
+		''
+	)
 	const codeVerifier = randomString
 	const data = new TextEncoder().encode(codeVerifier)
 	const hashed = await crypto.subtle.digest('SHA-256', data)
 
-	const code_challenge_base64 = btoa(String.fromCharCode(...new Uint8Array(hashed)))
+	const code_challenge_base64 = btoa(
+		String.fromCharCode(...new Uint8Array(hashed))
+	)
 		.replace(/=/g, '')
 		.replace(/\+/g, '-')
 		.replace(/\//g, '_')
@@ -114,9 +120,12 @@ const refreshToken = async () => {
 
 	const nextToken = await response.json()
 
-	saveToken(nextToken)
+	if (nextToken.error) {
+		return true
+	}
 
-	return nextToken
+	console.log(response, nextToken)
+	saveToken(nextToken)
 }
 
 const getUserData = async () => {
@@ -136,7 +145,14 @@ interface LoggedOutState {
 	state: 'logged-out'
 }
 
-export const fetchAuthCode = async (): Promise<LoggedInState | LoggedOutState> => {
+const sleep = async (ms: number) =>
+	new Promise((resolve) => {
+		setTimeout(resolve, ms)
+	})
+
+export const fetchAuthCode = async (): Promise<
+	LoggedInState | LoggedOutState
+> => {
 	// On page load, try to fetch auth code from current browser search URL
 	const args = new URLSearchParams(window.location.search)
 	const code = args.get('code')
@@ -160,7 +176,13 @@ export const fetchAuthCode = async (): Promise<LoggedInState | LoggedOutState> =
 
 		// Handle expired
 		if (userData.error?.status === 401) {
-			await refreshToken()
+			const error = await refreshToken()
+
+			if (error) {
+				return { state: 'logged-out' } as const
+			}
+
+			await sleep(2000)
 			return fetchAuthCode()
 		}
 
