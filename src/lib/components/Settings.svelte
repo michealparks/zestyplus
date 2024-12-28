@@ -43,10 +43,10 @@
 
 {#if open.current}
 	<div
-		class="absolute left-0 top-0 grid h-screen w-screen backdrop-blur-sm"
+		class="absolute left-0 top-0 z-20 grid h-screen w-screen backdrop-blur-sm"
 	></div>
 	<div
-		class="absolute left-0 top-0 grid h-screen w-screen place-content-center"
+		class="absolute left-0 top-0 z-20 grid h-screen w-screen place-content-center"
 	>
 		<div class="h-44 w-80 rounded-sm bg-white p-2 shadow-xl">
 			<MusicServices />
