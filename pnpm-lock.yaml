@@ -42,8 +42,8 @@ importers:
         specifier: 3.0.0-next.19
         version: 3.0.0-next.19(@dimforge/rapier3d-compat@0.14.0)(svelte@5.16.0)(three@0.171.0)
       '@threlte/studio':
-        specifier: 0.1.0-next.25
-        version: 0.1.0-next.25(svelte@5.16.0)(three@0.171.0)(vite@6.0.6(jiti@1.21.6)(sass@1.83.0)(yaml@2.6.1))
+        specifier: 0.1.0-next.26
+        version: 0.1.0-next.26(svelte@5.16.0)(three@0.171.0)(vite@6.0.6(jiti@1.21.6)(sass@1.83.0)(yaml@2.6.1))
       '@types/three':
         specifier: ^0.171.0
         version: 0.171.0
@@ -816,8 +816,8 @@ packages:
       svelte: '>=5'
       three: '>=0.152'
 
-  '@threlte/studio@0.1.0-next.25':
-    resolution: {integrity: sha512-mcKby8Z9f8INIfsLtzjQo5AMagIa9nUxJM25tBa97R0bZlA7D1DQzGyQEZdl2ZofpWL1IGnphJ5l9AufMmCqHw==}
+  '@threlte/studio@0.1.0-next.26':
+    resolution: {integrity: sha512-T46bkvxxc5Qyr5veUfCRct8SYZyUGnTi9Ab7at+GFJOV8pK3Sxmsy0/LFTx8mzAI9s9VXUkAd0Jgf4A7oLOL8Q==}
     peerDependencies:
       svelte: '>=5'
       three: '>=0.152'
@@ -2763,7 +2763,7 @@ snapshots:
       svelte: 5.16.0
       three: 0.171.0
 
-  '@threlte/studio@0.1.0-next.25(svelte@5.16.0)(three@0.171.0)(vite@6.0.6(jiti@1.21.6)(sass@1.83.0)(yaml@2.6.1))':
+  '@threlte/studio@0.1.0-next.26(svelte@5.16.0)(three@0.171.0)(vite@6.0.6(jiti@1.21.6)(sass@1.83.0)(yaml@2.6.1))':
     dependencies:
       '@floating-ui/dom': 1.6.12
       '@mdi/js': 7.4.47
