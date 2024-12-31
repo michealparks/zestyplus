@@ -15,6 +15,8 @@
 	import Studio from '$lib/components/Studio.svelte'
 	import Logo from '$lib/components/Logo.svelte'
 	import { goto } from '$app/navigation'
+	import Countdown from '$lib/components/Countdown.svelte'
+	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
 
 	let { children } = $props()
 
@@ -65,4 +67,6 @@
 	<PageTransition />
 	<Settings />
 	<TrackInfo />
+	<Countdown />
+	<PlaylistQr />
 {/if}

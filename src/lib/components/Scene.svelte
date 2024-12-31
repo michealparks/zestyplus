@@ -8,6 +8,6 @@
 <Postprocessing />
 
 <World>
-	<Debug />
+	<!-- <Debug /> -->
 	{@render children()}
 </World>

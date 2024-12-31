@@ -1,6 +1,7 @@
 export const KeyBindings = {
-	Studio: 's',
+	Settings: 's',
+	Studio: '`',
 	Fullscreen: 'f',
 	PreviousPage: 'arrowleft',
 	NextPage: 'arrowright',
-}
+} as const

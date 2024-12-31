@@ -1,6 +1,11 @@
 import { useAuth, type Token } from './auth.svelte'
 
 export interface TrackInfo {
+	context?: {
+		external_urls?: {
+			spotify?: string
+		}
+	}
 	item: {
 		id: string
 		name: string
@@ -32,7 +37,9 @@ const statuses = {
 	NO_TRACK_PLAYING: 204,
 }
 
-const fetchCurrentlyPlayingTrack = async (token: Token): Promise<TrackInfo | undefined> => {
+const fetchCurrentlyPlayingTrack = async (
+	token: Token
+): Promise<TrackInfo | undefined> => {
 	const url = 'https://api.spotify.com/v1/me/player/currently-playing'
 
 	try {
@@ -49,7 +56,9 @@ const fetchCurrentlyPlayingTrack = async (token: Token): Promise<TrackInfo | und
 		}
 
 		if (!response.ok) {
-			console.error(`fetchCurrentlyPlayingTrack: ${response.status} - ${response.statusText}`)
+			console.error(
+				`fetchCurrentlyPlayingTrack: ${response.status} - ${response.statusText}`
+			)
 			return
 		}
 

@@ -20,7 +20,7 @@
 {#if visible.current && track.current}
 	{@const { item } = track.current}
 	<div
-		class="absolute bottom-0 right-0 flex flex-col items-end gap-1.5 p-4 text-white"
+		class="absolute bottom-0 left-0 flex items-end gap-1.5 p-4 text-white"
 		transition:fade={{ duration: 200 }}
 	>
 		<div class="h-[120px] w-[120px] overflow-hidden rounded-lg shadow-2xl">
@@ -33,14 +33,16 @@
 			/>
 		</div>
 
-		<p class="text-sm leading-none">
-			{item.name}
-		</p>
-		<p class="text-xs leading-none">
-			{#each item.artists as artist (artist.name)}
-				<span>{artist.name}</span>
-			{/each}
-		</p>
+		<div class="flex flex-col gap-1 px-2 py-2">
+			<p class="text-lg font-bold leading-none">
+				{item.name}
+			</p>
+			<p class="text-xs leading-none opacity-75">
+				{#each item.artists as artist (artist.name)}
+					<span>{artist.name}</span>
+				{/each}
+			</p>
+		</div>
 	</div>
 {/if}
 
