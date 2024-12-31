@@ -1,7 +1,21 @@
 <script lang="ts">
-	import { VideoTexture, Mesh } from 'three'
+	import {
+		VideoTexture,
+		Mesh,
+		SpotLight,
+		ShaderMaterial,
+		PlaneGeometry,
+	} from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { Environment, OrbitControls } from '@threlte/extras'
+	import Lightformer from '$lib/components/Lightformer.svelte'
+	import { useAnalyser } from '$lib'
+	import { lerp } from 'three/src/math/MathUtils.js'
+	import { normalizeToUnitInterval } from '$lib/math'
+	import { fragmentShader, vertexShader } from './shader'
+
+	const { scene } = useThrelte()
+	const { frequencyData } = useAnalyser()
 
 	let texture: VideoTexture | undefined = $state()
 
@@ -26,36 +40,74 @@
 		texture = new VideoTexture(video)
 	}
 
-	$effect(() => {
-		createWebcamTexture()
+	// $effect(() => {
+	// 	createWebcamTexture()
+	// })
+
+	const spot1 = new SpotLight()
+
+	const mesh1 = new Mesh()
+
+	const uniforms = {
+		time: { value: 1.0 },
+	}
+	const shaderMaterial = new ShaderMaterial({
+		uniforms,
+		vertexShader,
+		fragmentShader,
 	})
 
-	const mesh = new Mesh()
-
 	useTask((delta) => {
-		mesh.rotation.y += delta
+		mesh1.rotation.y += delta
+
+		uniforms.time.value += delta / 3 + frequencyData.current[32] / 500
+
+		const n = normalizeToUnitInterval(frequencyData.current[16], 0, 100)
+		spot1.intensity = lerp(n * 10, 0, delta / 2)
 	})
 </script>
 
 <T.PerspectiveCamera
 	makeDefault
-	position.z={5}
+	position.z={6}
 >
 	<OrbitControls />
 </T.PerspectiveCamera>
 
-<T.DirectionalLight />
-<T.AmbientLight />
+<!-- <T.DirectionalLight
+	castShadow
+	position={[2, 2, 2]}
+/> -->
+<!-- <T.AmbientLight /> -->
 
-{#if texture}
-	<T is={mesh}>
-		<T.TorusKnotGeometry args={[1, 0.4, 256, 64]} />
-		<T.MeshStandardMaterial
-			roughness={0.1}
-			metalness={1}
-			envMap={texture}
-		/>
-	</T>
+<T
+	is={spot1}
+	castShadow
+	intensity={1000}
+	position={[4, 3, 2]}
+	oncreate={(ref) => {
+		ref.lookAt(0, 0, 0)
 
-	<Environment {texture} />
-{/if}
+		scene.add(ref.target)
+		ref.target.position.set(0, 0, 0)
+	}}
+/>
+
+<T
+	is={mesh1}
+	castShadow
+	receiveShadow
+>
+	<T.TorusKnotGeometry args={[1, 0.4, 256, 64]} />
+	<T.MeshStandardMaterial
+		roughness={0.1}
+		metalness={1}
+	/>
+</T>
+
+<T.Mesh position.z={-1}>
+	<T is={shaderMaterial} />
+	<T.BoxGeometry args={[12, 3]} />
+</T.Mesh>
+
+<Lightformer />

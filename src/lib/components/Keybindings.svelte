@@ -6,15 +6,15 @@
 		document.body.requestFullscreen()
 	}
 
-	const onkeydown = (event: KeyboardEvent) => {
-		const key = event.key.toLowerCase()
-		switch (key) {
+	const onkeydown = ({ key }: KeyboardEvent) => {
+		console.log(key)
+		switch (key.toLowerCase()) {
 			case KeyBindings.Fullscreen:
 				return toggleFullscreen()
 			case KeyBindings.PreviousPage:
 				return transitionPage(-1)
 			case KeyBindings.NextPage:
-				return transitionPage(1)
+				return transitionPage(+1)
 		}
 	}
 </script>

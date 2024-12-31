@@ -1,11 +1,19 @@
 <script lang="ts">
-	import { BoxGeometry, Color, Fog, Mesh, MeshStandardMaterial } from 'three'
+	import {
+		BoxGeometry,
+		Color,
+		DirectionalLight,
+		Fog,
+		Mesh,
+		MeshStandardMaterial,
+	} from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { AutoColliders, RigidBody, World } from '@threlte/rapier'
 
 	import Breakable from '$lib/components/Breakable.svelte'
 	import Lightformer from '$lib/components/Lightformer.svelte'
 	import { hueShift, useAnalyser } from '$lib'
+	import { lerp } from 'three/src/math/MathUtils.js'
 
 	const { scene } = useThrelte()
 	const { frequencyData } = useAnalyser()
@@ -37,8 +45,11 @@
 
 	let color1 = $state()
 
-	useTask(() => {
-		color1 = hueShift(c, frequencyData.current[32] / 100)
+	const light = new DirectionalLight()
+
+	useTask((dt) => {
+		const i = frequencyData.current[16] / 200
+		light.intensity = Math.min(1, Math.max(lerp(i, 0, 2 * dt), 0.5))
 	})
 </script>
 
@@ -49,7 +60,8 @@
 	oncreate={(ref) => ref.lookAt(0, 0, 0)}
 />
 
-<T.DirectionalLight
+<T
+	is={light}
 	intensity={0.5}
 	position={[1, 1, 1]}
 	castShadow
