@@ -18,6 +18,7 @@
 	import Countdown from '$lib/components/Countdown.svelte'
 	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
 	import { schedulePageCycle } from '$lib/pages.svelte'
+	import Costco from '$lib/components/Costco.svelte'
 
 	let { children } = $props()
 
@@ -82,4 +83,5 @@
 	<TrackInfo />
 	<Countdown />
 	<PlaylistQr />
+	<Costco />
 {/if}
