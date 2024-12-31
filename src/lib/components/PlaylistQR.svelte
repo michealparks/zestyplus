@@ -1,42 +1,48 @@
 <script lang="ts">
-	import { useTrack } from '$lib/track.svelte'
 	import QrCreator from 'qr-creator'
+	import { PersistedState } from 'runed'
+	import { useTrack } from '$lib/track.svelte'
+	import { KeyBindings } from '$lib/keybindings'
+
+	const showQR = new PersistedState('show-playlist-qr-code', false)
 
 	const { track } = useTrack()
 
-	let div: HTMLElement | undefined
+	let div: HTMLElement | undefined = $state()
 
-	const render = (el: HTMLElement, text?: string) => {
-		el.innerHTML = ''
-
-		if (text === undefined) return
-
-		QrCreator.render(
-			{
-				text,
-				radius: 0.0, // 0.0 to 0.5
-				ecLevel: 'H', // L, M, Q, H
-				fill: '#fff', // foreground color
-				background: null, // color or null for transparent
-				size: 128, // in pixels
-			},
-			el
-		)
-	}
+	let url = $derived(track.current?.context?.external_urls?.spotify)
 
 	$effect(() => {
-		if (div === undefined) return
-
-		const url = track.current?.context?.external_urls?.spotify
-
-		render(div, url)
+		if (div && url) {
+			QrCreator.render(
+				{
+					text: url,
+					radius: 0.0, // 0.0 to 0.5
+					ecLevel: 'H', // L, M, Q, H
+					fill: '#fff', // foreground color
+					background: null, // color or null for transparent
+					size: 128, // in pixels
+				},
+				div
+			)
+		}
 	})
 </script>
 
-<div
-	class="z-1 inline-flex w-24 p-4"
-	bind:this={div}
-></div>
+<svelte:window
+	onkeydown={({ key }) => {
+		if (key.toLowerCase() === KeyBindings.QRCode) {
+			showQR.current = !showQR.current
+		}
+	}}
+/>
+
+{#if showQR.current && url}
+	<div
+		class="z-1 inline-flex w-24 p-4"
+		bind:this={div}
+	></div>
+{/if}
 
 <style>
 	div :global(canvas) {

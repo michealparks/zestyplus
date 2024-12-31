@@ -9,7 +9,7 @@
 		AutoColliders,
 		RigidBody,
 	} from '@threlte/rapier'
-	import { Vector3, type Object3D } from 'three'
+	import { Quaternion, Vector3, type Object3D } from 'three'
 	import { ConvexObjectBreaker } from 'three/addons'
 	import Self from './Breakable.svelte'
 
@@ -62,6 +62,8 @@
 		impactV = new Vector3(contactPoint.x, contactPoint.y, contactPoint.z)
 	}
 
+	const pos = new Vector3()
+	const quat = new Quaternion()
 	const vec3 = new Vector3()
 
 	const oncontact: ContactEvent = (event) => {
@@ -77,15 +79,19 @@
 		impactN = new Vector3(normal.x, normal.y, normal.z)
 
 		debris = breaker.subdivideByImpact(mesh, impactV, impactN, 2, 1)
-		console.log(debris)
 
-		mesh.getWorldPosition(vec3)
-		const parentPos = mesh.parent?.parent?.position
+		const parent = mesh.parent!
+		parent.getWorldPosition(pos)
+		parent.getWorldQuaternion(quat)
+		// const parentPos = mesh.parent?.parent?.position
+		// const parentRot = mesh.parent?.parent?.quaternion
 
-		if (!parentPos) return
+		// if (!parentPos) return
 
 		for (const item of debris) {
-			item.position.add(parentPos)
+			item.quaternion.copy(quat)
+			item.position.add(pos)
+			item.castShadow = item.receiveShadow = true
 		}
 	}
 </script>

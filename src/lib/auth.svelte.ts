@@ -124,7 +124,6 @@ const refreshToken = async () => {
 		return true
 	}
 
-	console.log(response, nextToken)
 	saveToken(nextToken)
 }
 

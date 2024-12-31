@@ -66,7 +66,6 @@
 	fov={100}
 	position={[0, 4, 10]}
 	oncreate={(ref) => {
-		console.log('here')
 		ref.lookAt(0, 2, 0)
 	}}
 />

@@ -1,9 +1,30 @@
 <script lang="ts">
-	import { DoubleSide } from 'three'
+	import { DoubleSide, type ColorRepresentation } from 'three'
 	import { T } from '@threlte/core'
 	import { VirtualEnvironment, TransformControls } from '@threlte/extras'
 
-	let debug = false
+	type Props = {
+		color1: ColorRepresentation
+		color2: ColorRepresentation
+		color3: ColorRepresentation
+		debug: boolean
+	}
+
+	let {
+		color1 = '#FF4F4F',
+		color2 = '#FFD0CB',
+		color3 = '#2223FF',
+		debug = false,
+	}: Props = $props()
+
+	let virtualEnvironment = $state()
+
+	$effect(() => {
+		color1
+		color2
+		color3
+		virtualEnvironment?.update()
+	})
 </script>
 
 {#snippet lightformer(
@@ -32,8 +53,11 @@
 		{/snippet}
 	</T.Group>
 {/snippet}
-<VirtualEnvironment visible={debug}>
-	{@render lightformer('#FF4F4F', 'plane', 20, [0, 0, -20], debug)}
-	{@render lightformer('#FFD0CB', 'circle', 5, [0, 5, 0], debug)}
-	{@render lightformer('#2223FF', 'plane', 8, [-3, 0, 4], debug)}
+<VirtualEnvironment
+	bind:this={virtualEnvironment}
+	visible={debug}
+>
+	{@render lightformer(color1, 'plane', 20, [0, 0, -20], debug)}
+	{@render lightformer(color2, 'circle', 5, [0, 5, 0], debug)}
+	{@render lightformer(color3, 'plane', 8, [-3, 0, 4], debug)}
 </VirtualEnvironment>

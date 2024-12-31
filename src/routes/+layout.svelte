@@ -14,9 +14,10 @@
 	import Scene from '$lib/components/Scene.svelte'
 	import Studio from '$lib/components/Studio.svelte'
 	import Logo from '$lib/components/Logo.svelte'
-	import { goto } from '$app/navigation'
+	import { goto, onNavigate } from '$app/navigation'
 	import Countdown from '$lib/components/Countdown.svelte'
 	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
+	import { schedulePageCycle } from '$lib/pages.svelte'
 
 	let { children } = $props()
 
@@ -25,6 +26,12 @@
 	$effect(() => {
 		preload()
 		startAnalyser()
+	})
+
+	let id = -1
+	onNavigate((event) => {
+		clearTimeout(id)
+		id = schedulePageCycle()
 	})
 </script>
 

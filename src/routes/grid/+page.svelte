@@ -54,7 +54,7 @@
 	position.y={-0.02}
 	receiveShadow
 >
-	<T.PlaneGeometry args={[50, 50]} />
+	<T.PlaneGeometry args={[100, 100]} />
 	<T.MeshStandardMaterial color="black" />
 </T.Mesh>
 

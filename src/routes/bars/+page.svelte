@@ -7,7 +7,7 @@
 	const { size } = useThrelte()
 	const { frequencyData } = useAnalyser()
 
-	const count = 48
+	const count = 60
 	const gap = 1
 	const offset = (count * gap) / 2
 
@@ -54,8 +54,8 @@
 	position.y={-0.02}
 	receiveShadow
 >
-	<T.PlaneGeometry args={[50, 50]} />
-	<T.MeshStandardMaterial color="white" />
+	<T.PlaneGeometry args={[100, 100]} />
+	<T.MeshStandardMaterial color="black" />
 </T.Mesh>
 
 {#each positions as position, index}

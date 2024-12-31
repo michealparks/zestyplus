@@ -3,7 +3,8 @@
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { RoundedBoxGeometry } from '@threlte/extras'
 	import { Matrix4, Mesh } from 'three'
-	import Lightformer from './Lightformer.svelte'
+
+	import Lightformer from '$lib/components/Lightformer.svelte'
 
 	const { camera } = useThrelte()
 
