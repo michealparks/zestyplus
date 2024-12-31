@@ -1,1 +1,0 @@
-import{b as c,E as s,k as i,h as r,d as h,l as d,m}from"./index-client.DDUn5bf5.js";function l(t,f,o){r&&h();var n=t,a,e;c(()=>{a!==(a=f())&&(e&&(d(e),e=null),a&&(e=i(()=>o(n,a))))},s),r&&(n=m)}export{l as c};
