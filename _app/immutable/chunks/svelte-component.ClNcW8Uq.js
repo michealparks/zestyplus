@@ -1,1 +1,0 @@
-import{n as c,E as s,z as i,o as r,q as h,A as p,B as d}from"./index-client.D_7LkImg.js";function u(o,t,f){r&&h();var e=o,a,n;c(()=>{a!==(a=t())&&(n&&(p(n),n=null),a&&(n=i(()=>f(e,a))))},s),r&&(e=d)}export{u as c};
