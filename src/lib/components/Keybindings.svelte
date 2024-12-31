@@ -20,3 +20,4 @@
 </script>
 
 <svelte:window {onkeydown} />
+<svelte:body onmousedown={(event) => event.target.requestPointerLock()} />

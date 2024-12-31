@@ -29,7 +29,13 @@
 	})
 
 	let id = -1
-	onNavigate((event) => {
+
+	$effect(() => {
+		clearTimeout(id)
+		id = schedulePageCycle()
+	})
+
+	onNavigate(() => {
 		clearTimeout(id)
 		id = schedulePageCycle()
 	})
