@@ -1,0 +1,1 @@
+import{g as e,b as o}from"./index-client.DzQlphmH.js";import{c as r}from"./T.D9_Xg1XW.js";const c=()=>{const t=r({});o("threlte-user-context",t)},a=()=>{const t=e("threlte-user-context");if(!t)throw new Error("useUserContext can only be used in a child component to <Canvas>.");return t};export{c,a as u};
