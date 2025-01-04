@@ -1,20 +1,22 @@
 <script>
 	let costco = $state(false)
 
+	let interval = 1000 * 20
+
 	$effect(() => {
 		function flip() {
 			// flip a coin
-			const coin = Math.random() > 0.25
+			const coin = Math.random() > 0
 
 			if (coin) {
 				console.log(coin)
 				costco = true
 				setTimeout(() => {
 					costco = false
-					setTimeout(flip, 1000 * 60)
+					setTimeout(flip, interval)
 				}, 20 * 1000)
 			} else {
-				setTimeout(flip, 1000 * 60)
+				setTimeout(flip, interval)
 			}
 		}
 

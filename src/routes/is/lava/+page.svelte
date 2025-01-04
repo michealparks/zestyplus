@@ -14,9 +14,7 @@
 		scene.fog = new Fog('black')
 		scene.fog.far = 10
 		scene.fog.near = 8
-		return () => {
-			scene.fog = undefined
-		}
+		return () => (scene.fog = null)
 	})
 
 	const count = 30
@@ -94,7 +92,10 @@
 <T.DirectionalLight />
 
 <MarchingCubes>
-	<T.MeshStandardMaterial vertexColors />
+	<T.MeshStandardMaterial
+		vertexColors
+		roughness={0.01}
+	/>
 	{#each balls as { marchingCube }}
 		<T is={marchingCube} />
 	{/each}

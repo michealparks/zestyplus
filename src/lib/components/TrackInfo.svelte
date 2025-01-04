@@ -3,19 +3,17 @@
 
 	import { PersistedState } from 'runed'
 	import { useTrack } from '$lib'
+	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
 
 	const { track } = useTrack()
 
 	const visible = new PersistedState('trackinfo-visible', true)
-</script>
 
-<svelte:window
-	onkeydown={(event) => {
-		if (event.key.toLowerCase() === 't') {
-			visible.current = !visible.current
-		}
-	}}
-/>
+	useKeybinding(
+		Keybindings.TrackInfo,
+		() => (visible.current = !visible.current)
+	)
+</script>
 
 {#if visible.current && track.current}
 	{@const { item } = track.current}

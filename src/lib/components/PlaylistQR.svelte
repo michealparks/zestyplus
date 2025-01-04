@@ -2,7 +2,7 @@
 	import QrCreator from 'qr-creator'
 	import { PersistedState } from 'runed'
 	import { useTrack } from '$lib/track.svelte'
-	import { KeyBindings } from '$lib/keybindings'
+	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
 
 	const showQR = new PersistedState('show-playlist-qr-code', false)
 
@@ -27,15 +27,9 @@
 			)
 		}
 	})
-</script>
 
-<svelte:window
-	onkeydown={({ key }) => {
-		if (key.toLowerCase() === KeyBindings.QRCode) {
-			showQR.current = !showQR.current
-		}
-	}}
-/>
+	useKeybinding(Keybindings.QRCode, () => (showQR.current = !showQR.current))
+</script>
 
 {#if showQR.current && url}
 	<div

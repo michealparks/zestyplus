@@ -6,14 +6,23 @@ export const omit = ['just4jon', 'tubeman']
 export const pages = [
 	...new Set(
 		Object.keys(modules)
-			.map((path) => path.split('/')[2])
-			.filter((path) => !path.startsWith('+'))
+			.map((path) => path.split('/')[3])
+			.filter((path) => path !== undefined && !path.startsWith('+'))
 			.filter((path) => !omit.includes(path))
 	),
 ]
 
+console.log(Object.keys(modules).map((path) => path.split('/')[3]))
+console.log(
+	Object.keys(modules)
+		.map((path) => path.split('/')[3])
+		.filter((path) => path !== undefined && !path.startsWith('+'))
+		.filter((path) => !omit.includes(path))
+)
+console.log(pages)
+
 export const transitionPage = (direction: 1 | -1) => {
-	const currentPage = window.location.pathname.replace('/', '')
+	const currentPage = window.location.pathname.replace('/is/', '')
 	const currentIndex = pages.findIndex((page) => page === currentPage)
 
 	let nextIndex = currentIndex + direction
@@ -24,7 +33,7 @@ export const transitionPage = (direction: 1 | -1) => {
 		nextIndex = 0
 	}
 
-	let nextPage = `/${pages[nextIndex]}`
+	let nextPage = `/is/${pages[nextIndex]}`
 
 	if (nextPage === undefined) {
 		nextPage = pages[0]

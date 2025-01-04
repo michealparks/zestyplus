@@ -1,41 +1,18 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition'
-	import { PersistedState } from 'runed'
+	import { PersistedState, IsIdle } from 'runed'
 
 	import Spotify from './Spotify.svelte'
 	import Logo from './Logo.svelte'
+	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
 
 	const open = new PersistedState('settings-open', false)
+	const idle = new IsIdle({ timeout: 3000 })
 
-	let timeoutId = -1
-	let showSettingsToggle = $state(false)
-
-	const onmousemove = () => {
-		clearTimeout(timeoutId)
-		showSettingsToggle = true
-
-		timeoutId = setTimeout(() => (showSettingsToggle = false), 5000)
-	}
-
-	const onkeydown = (event: KeyboardEvent) => {
-		const key = event.key.toLowerCase()
-
-		if (key === 's') {
-			open.current = !open.current
-		}
-
-		if (open.current && key === 'escape') {
-			open.current = false
-		}
-	}
+	useKeybinding(Keybindings.Settings, () => (open.current = !open.current))
 </script>
 
-<svelte:window
-	{onmousemove}
-	{onkeydown}
-/>
-
-{#if showSettingsToggle}
+{#if !idle.current}
 	<button
 		class="absolute right-2 top-2 z-10 h-6 w-6 p-1"
 		aria-label="Open settings"
@@ -60,13 +37,21 @@
 {/if}
 
 {#if open.current}
+	<button
+		aria-label="Exit settings"
+		class="absolute left-0 top-0 z-20 grid h-screen w-screen cursor-default backdrop-blur-sm"
+		onclick={(event) => {
+			if (event.target === event.currentTarget) {
+				open.current = false
+			}
+		}}
+	></button>
 	<div
-		class="absolute left-0 top-0 z-20 grid h-screen w-screen backdrop-blur-sm"
-	></div>
-	<div
-		class="absolute left-0 top-0 z-20 grid h-screen w-screen place-content-center"
+		class="pointer-events-none absolute left-0 top-0 z-20 grid h-screen w-screen place-content-center"
 	>
-		<div class="h-44 w-80 rounded-sm bg-white p-2 shadow-xl">
+		<div
+			class="pointer-events-auto h-44 w-80 rounded-sm bg-white p-2 shadow-xl"
+		>
 			<div class="-mt-12 mb-4 flex w-full justify-center">
 				<Logo class="w-24" />
 			</div>

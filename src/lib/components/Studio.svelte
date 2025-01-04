@@ -2,22 +2,17 @@
 	import { PersistedState } from 'runed'
 
 	import Scene from './Scene.svelte'
-	import { KeyBindings } from '../keybindings'
+	import { Keybindings, useKeybinding } from '../keybindings.svelte'
 
 	let { children } = $props()
 
 	let enableStudio = new PersistedState('enable-studio', false)
+
+	useKeybinding(
+		Keybindings.Studio,
+		() => (enableStudio.current = !enableStudio.current)
+	)
 </script>
-
-<svelte:window
-	onkeydown={(event) => {
-		const key = event.key.toLowerCase()
-
-		if (key === KeyBindings.Studio) {
-			enableStudio.current = !enableStudio.current
-		}
-	}}
-/>
 
 {#if enableStudio.current}
 	{#await import('@threlte/studio') then { Studio }}

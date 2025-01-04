@@ -3,21 +3,22 @@
 
 	import { page } from '$app/state'
 	import { Canvas } from '@threlte/core'
+	import { PersistedState } from 'runed'
 
+	import { goto, onNavigate } from '$app/navigation'
 	import { useAnalyser } from '$lib'
 	import { preload } from '$lib/preload'
+	import { schedulePageCycle } from '$lib/pages.svelte'
+	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
 
-	import Keybindings from '$lib/components/Keybindings.svelte'
 	import TrackInfo from '$lib/components/TrackInfo.svelte'
 	import Settings from '$lib/components/Settings.svelte'
 	import PageTransition from '$lib/components/PageTransition.svelte'
 	import Scene from '$lib/components/Scene.svelte'
 	import Studio from '$lib/components/Studio.svelte'
 	import Logo from '$lib/components/Logo.svelte'
-	import { goto, onNavigate } from '$app/navigation'
 	import Countdown from '$lib/components/Countdown.svelte'
 	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
-	import { schedulePageCycle } from '$lib/pages.svelte'
 	import Costco from '$lib/components/Costco.svelte'
 
 	let { children } = $props()
@@ -40,6 +41,14 @@
 		clearTimeout(id)
 		id = schedulePageCycle()
 	})
+
+	let costcoMode = new PersistedState('costco-mode', false)
+
+	useKeybinding(
+		Keybindings.CostcoMode,
+		() => (costcoMode.current = !costcoMode.current)
+	)
+	useKeybinding(Keybindings.Fullscreen, () => document.body.requestFullscreen())
 </script>
 
 <div class="absolute left-0 top-0 h-screen w-screen">
@@ -77,11 +86,13 @@
 		</div>
 	</div>
 {:else}
-	<Keybindings />
 	<PageTransition />
 	<Settings />
 	<TrackInfo />
 	<Countdown />
 	<PlaylistQr />
-	<Costco />
+
+	{#if costcoMode.current}
+		<Costco />
+	{/if}
 {/if}

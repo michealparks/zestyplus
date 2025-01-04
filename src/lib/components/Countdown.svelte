@@ -78,7 +78,7 @@
 	$effect(() => {
 		const time = minutesBeforeNewYears(10)
 
-		// const time = getDateSecondsFromNow(5 * 60)
+		//const time = getDateSecondsFromNow(5 * 60)
 		targetTime = time.getTime()
 
 		const cleanup = onTargetTime(time, startCountdown)

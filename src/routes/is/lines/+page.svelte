@@ -2,7 +2,7 @@
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { Grid } from '@threlte/extras'
 	import { Line2, LineMaterial, LineGeometry } from 'three/addons'
-	import { shiftAndAddVector } from '../../lib/array'
+	import { shiftAndAddVector } from '../../../lib/array'
 	import { hueShift } from '$lib/color'
 	import { useAnalyser } from '$lib'
 	import { Color, Mesh } from 'three'

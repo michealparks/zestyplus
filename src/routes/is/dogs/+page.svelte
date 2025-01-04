@@ -7,20 +7,16 @@
 
 	const count = 15
 
-	const hotdog = useGltf('hotdog.glb')
-
 	let nodes: Mesh[] = $state([])
 
-	$effect.pre(() => {
-		if (!$hotdog) return
-
-		nodes = [
-			$hotdog.nodes['Object_2'],
-			$hotdog.nodes['Object_3'],
-			$hotdog.nodes['Object_4'],
-			$hotdog.nodes['Object_5'],
-			$hotdog.nodes['Object_6'],
-		]
+	useGltf('/hotdog.glb').then((dog) => {
+		nodes.push(
+			dog.nodes['Object_2'],
+			dog.nodes['Object_3'],
+			dog.nodes['Object_4'],
+			dog.nodes['Object_5'],
+			dog.nodes['Object_6']
+		)
 	})
 
 	const reset = (rigidbody: RapierRigidBody) => {
@@ -42,14 +38,6 @@
 			true
 		)
 	}
-
-	const start = (rigidbody: RapierRigidBody, index: number) => {
-		rigidbody.sleep()
-		setTimeout(() => {
-			rigidbody.wakeUp()
-			reset(rigidbody)
-		}, index * 1000)
-	}
 </script>
 
 <T.PerspectiveCamera
@@ -62,22 +50,23 @@
 <World gravity={[0, -1, 0]}>
 	{#if nodes.length > 0}
 		{#each { length: count }, index}
-			<T.Group position.y={-20}>
-				<RigidBody
-					type="dynamic"
-					oncreate={(ref) => start(ref, index)}
-				>
-					<Collider
-						shape={'cuboid'}
-						args={[0.5, 0.5, 0.5]}
-					/>
-					<T.Group scale={0.0015}>
-						{#each nodes as node (node.uuid)}
-							<T is={node.clone(true)} />
-						{/each}
-					</T.Group>
-				</RigidBody>
-			</T.Group>
+			<RigidBody
+				type="dynamic"
+				oncreate={(ref) => {
+					ref.setTranslation({ x: 0, y: -20, z: 0 }, true)
+					setTimeout(() => reset(ref), index * 1000)
+				}}
+			>
+				<Collider
+					shape={'cuboid'}
+					args={[0.5, 0.5, 0.5]}
+				/>
+				<T.Group scale={0.0015}>
+					{#each nodes as node (node.uuid)}
+						<T is={node.clone(true)} />
+					{/each}
+				</T.Group>
+			</RigidBody>
 		{/each}
 	{/if}
 
