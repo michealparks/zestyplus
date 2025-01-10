@@ -77,7 +77,11 @@
 	<T.MeshStandardMaterial color="black" />
 </T.Mesh>
 
-<T is={mesh}>
+<T
+	is={mesh}
+	castShadow
+	receiveShadow
+>
 	<T.BoxGeometry args={[0.5, 0.5, 0.5]} />
 	<T.MeshStandardMaterial />
 	<Outlines color="black" />

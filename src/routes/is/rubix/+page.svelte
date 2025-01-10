@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { useAnalyser } from '$lib'
+	import { hueShift, useAnalyser } from '$lib'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { RoundedBoxGeometry } from '@threlte/extras'
-	import { Matrix4, Mesh } from 'three'
+	import { Color, Matrix4, Mesh } from 'three'
 
 	import Lightformer from '$lib/components/Lightformer.svelte'
 
@@ -40,21 +40,32 @@
 	}
 
 	let x = 0
+	let colorIndex = 0
+	let colorIndex2 = 0
 
-	useTask(() => {
-		x += 0.05
+	const c = new Color('red')
+
+	useTask((dt) => {
+		x += dt
 		camera.current.applyMatrix4(rotationMatrix)
 
 		for (const [index, cube] of cubes.entries()) {
 			cubeTranslation(
 				index,
-				(Math.sin(x) * 0.01 * frequencyData.current[32]) / 10
+				(Math.sin(x) * 0.01 * frequencyData.current[32]) / 30
 			)
 			cube.applyMatrix4(translateMatrix)
 		}
-	})
 
-	$inspect(frequencyData.current[64] / 100)
+		if (frequencyData.current[16] >= 100) {
+			const cube = cubes[colorIndex]
+			const newColor = hueShift(cube.material.color, colorIndex2)
+			cube.material.color.set(newColor)
+			colorIndex += 1
+			colorIndex2 += 10
+			colorIndex %= cubes.length
+		}
+	})
 </script>
 
 <T.PerspectiveCamera

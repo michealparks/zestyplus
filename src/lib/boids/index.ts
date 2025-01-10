@@ -1,0 +1,5 @@
+export { BoidsController } from './controller'
+export { Entity } from './entity'
+export { Grid } from './grid'
+export { ControlHelper } from './helper'
+export { BoidsWorkerPlanner } from './worker-planner'
