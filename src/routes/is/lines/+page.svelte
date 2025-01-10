@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { Grid } from '@threlte/extras'
+	import { Grid, OrbitControls } from '@threlte/extras'
 	import { Line2, LineMaterial, LineGeometry } from 'three/addons'
 	import { shiftAndAddVector } from '../../../lib/array'
 	import { hueShift } from '$lib/color'
 	import { useAnalyser } from '$lib'
-	import { Color, Mesh } from 'three'
+	import { Color, Mesh, Vector3 } from 'three'
 
 	const { frequencyData } = useAnalyser()
 	const { camera } = useThrelte()
@@ -59,16 +59,41 @@
 			line.geometry.setPositions(line.positions)
 		}
 	})
+
+	let views = []
+	let view = $state('forward')
+
+	const target = new Vector3()
+	const vec3 = new Vector3()
+
+	useTask((delta) => {
+		const { z } = camera.current.position
+		if (view === 'forward') {
+			camera.current.position.lerp(vec3.set(0, 4, z), delta)
+			target.lerp(vec3.set(0, 4, z - 10), delta)
+		} else {
+			camera.current.position.lerp(vec3.set(0, 15, z), delta)
+			target.lerp(vec3.set(0, 2, z - 8), delta)
+		}
+		camera.current.lookAt(target)
+	})
+
+	$effect(() => {
+		const id = setInterval(() => {
+			view = view === 'forward' ? 'top' : 'forward'
+		}, 60_000)
+		return () => clearInterval(id)
+	})
 </script>
 
 <T.PerspectiveCamera
 	makeDefault
 	fov={100}
 	position={[0, 4, 10]}
-	oncreate={(ref) => {
-		ref.lookAt(0, 2, 0)
-	}}
-/>
+	oncreate={(ref) => ref.lookAt(0, 2, 0)}
+>
+	<OrbitControls />
+</T.PerspectiveCamera>
 
 <Grid
 	bind:ref={grid}

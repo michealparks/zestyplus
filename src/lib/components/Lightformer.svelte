@@ -3,7 +3,7 @@
 	import { T } from '@threlte/core'
 	import { VirtualEnvironment, TransformControls } from '@threlte/extras'
 
-	type Props = {
+	interface Props {
 		color1?: ColorRepresentation
 		color2?: ColorRepresentation
 		color3?: ColorRepresentation
@@ -29,7 +29,7 @@
 </script>
 
 {#snippet lightformer(
-	color: string,
+	color: ColorRepresentation,
 	shape: 'circle' | 'plane',
 	size: number,
 	position: [number, number, number],
@@ -40,7 +40,7 @@
 			{#if visible}
 				<TransformControls object={ref} />
 			{/if}
-			<T.Mesh lookAt={[0, 0, 0]}>
+			<T.Mesh oncreate={(ref) => ref.lookAt(0, 0, 0)}>
 				{#if shape === 'circle'}
 					<T.CircleGeometry args={[size / 2]} />
 				{:else}
@@ -54,11 +54,12 @@
 		{/snippet}
 	</T.Group>
 {/snippet}
+
 <VirtualEnvironment
 	bind:this={virtualEnvironment}
 	visible={debug}
 >
-	{@render lightformer(color1, 'plane', 20, [0, 0, -20], debug)}
-	{@render lightformer(color2, 'circle', 5, [0, 5, 0], debug)}
-	{@render lightformer(color3, 'plane', 8, [-3, 0, 4], debug)}
+	{@render lightformer(color1, 'plane', 4, [2, -10, -20], debug)}
+	{@render lightformer(color2, 'circle', 8, [3, -5, 0], debug)}
+	{@render lightformer(color3, 'plane', 10, [-3, -2, 4], debug)}
 </VirtualEnvironment>

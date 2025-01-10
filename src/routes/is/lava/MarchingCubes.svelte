@@ -43,7 +43,7 @@
 		true,
 		100_000
 	)
-	marchingCubes.scale.setScalar(1.5)
+	marchingCubes.scale.setScalar(2)
 
 	$effect(() => {
 		if (resolution !== marchingCubes.resolution) {

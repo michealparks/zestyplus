@@ -13,19 +13,20 @@
 	let url = $derived(track.current?.context?.external_urls?.spotify)
 
 	$effect(() => {
-		if (div && url) {
-			QrCreator.render(
-				{
-					text: url,
-					radius: 0.0, // 0.0 to 0.5
-					ecLevel: 'H', // L, M, Q, H
-					fill: '#fff', // foreground color
-					background: null, // color or null for transparent
-					size: 128, // in pixels
-				},
-				div
-			)
-		}
+		if (div === undefined) return
+		if (url === undefined) return
+
+		QrCreator.render(
+			{
+				text: url,
+				radius: 0.0, // 0.0 to 0.5
+				ecLevel: 'H', // L, M, Q, H
+				fill: '#fff', // foreground color
+				background: null, // color or null for transparent
+				size: 128, // in pixels
+			},
+			div
+		)
 	})
 
 	useKeybinding(Keybindings.QRCode, () => (showQR.current = !showQR.current))

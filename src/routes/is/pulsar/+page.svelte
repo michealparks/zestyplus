@@ -67,10 +67,8 @@
 <T.PerspectiveCamera
 	makeDefault
 	position.z={2.5}
-	position.y={-1}
->
-	<OrbitControls />
-</T.PerspectiveCamera>
+	position.y={0}
+></T.PerspectiveCamera>
 
 {#each lines as line}
 	<T is={line} />
