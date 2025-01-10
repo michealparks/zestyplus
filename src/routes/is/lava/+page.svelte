@@ -25,9 +25,8 @@
 	const vec2 = new Vector2()
 
 	for (let i = 0; i < count; i += 1) {
-		// const r = m * i
-		const x = (Math.random() - 0.5) * 2 // Math.cos(r)
-		const y = (Math.random() - 0.5) * 2 // Math.sin(r)
+		const x = (Math.random() - 0.5) * 2
+		const y = (Math.random() - 0.5) * 2
 		const position = vec2.set(x, y).multiplyScalar(scale)
 
 		const marchingCube = new MarchingCube()
@@ -56,18 +55,6 @@
 					marchingCube.animating = ''
 				}
 			}
-
-			// if (marchingCube.animating === 'up') {
-			// 	marchingCube.position.y += dt
-			// 	if (marchingCube.position.y >= 0.25) {
-			// 		marchingCube.animating = 'down'
-			// 	}
-			// } else if (marchingCube.animating === 'down') {
-			// 	marchingCube.position.y -= dt
-			// 	if (marchingCube.position.y <= -1) {
-			// 		marchingCube.animating = ''
-			// 	}
-			// }
 		}
 	})
 

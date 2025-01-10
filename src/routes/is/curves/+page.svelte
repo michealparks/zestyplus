@@ -19,7 +19,6 @@
 	}[] = []
 
 	// Generate Points for Harmonic Curves
-
 	const shiftScale = 1
 
 	// Generate random parameters
@@ -41,8 +40,10 @@
 			Math.random() * shiftScale,
 			Math.random() * shiftScale
 		)
+
 		const points: Vector3[] = []
-		for (let i = 0; i < numPoints; i++) {
+
+		for (let i = 0; i < numPoints; i += 1) {
 			const t = (i / numPoints) * Math.PI * 2 * loops // Map points around loops
 			const x = Math.sin(t * frequencyX) * (radius + amplitude * Math.sin(t))
 			const y = Math.cos(t * frequencyY) * (radius + amplitude * Math.cos(t))

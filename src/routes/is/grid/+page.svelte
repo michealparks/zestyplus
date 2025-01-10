@@ -19,8 +19,8 @@
 	const mesh = new InstancedMesh(undefined, undefined, count * count)
 
 	let index = 0
-	for (let i = 0; i < count; i++) {
-		for (let j = 0; j < count; j++) {
+	for (let i = 0; i < count; i += 1) {
+		for (let j = 0; j < count; j += 1) {
 			position.set(i * gap - offset, 0, j * gap - offset)
 			matrix.setPosition(position)
 			mesh.setMatrixAt(index, matrix)

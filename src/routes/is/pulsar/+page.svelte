@@ -2,7 +2,7 @@
 	import { useAnalyser } from '$lib'
 	import { normalizeToUnitIntervalLog } from '$lib/math'
 	import { T, useTask } from '@threlte/core'
-	import { Grid, OrbitControls } from '@threlte/extras'
+	import { OrbitControls } from '@threlte/extras'
 	import { Line2, LineMaterial, LineGeometry } from 'three/addons'
 
 	const { frequencyData } = useAnalyser()
@@ -47,15 +47,6 @@
 			points[index + 2] = 0.0001
 		}
 
-		// for (let i = 0, j = 0; i < lineVertices; i += 1, j += 3) {
-		// 	const index = (i + fftArray.length / 4) % fftArray.length
-		// 	const fft = fftArray[index] ?? 0
-
-		// 	points[j + 0] = i / 150
-		// 	points[j + 1] = fft / 200 - 1
-		// 	points[j + 2] = 0.0001
-		// }
-
 		lines[currentLine].geometry.setPositions(points)
 		lines[currentLine].position.set(-1.75, 0, 0)
 
@@ -84,5 +75,3 @@
 {#each lines as line}
 	<T is={line} />
 {/each}
-
-<!-- <Grid infiniteGrid /> -->

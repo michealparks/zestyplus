@@ -12,7 +12,7 @@
 
 	import Breakable from '$lib/components/Breakable.svelte'
 	import Lightformer from '$lib/components/Lightformer.svelte'
-	import { hueShift, useAnalyser } from '$lib'
+	import { useAnalyser } from '$lib'
 	import { lerp } from 'three/src/math/MathUtils.js'
 
 	const { scene } = useThrelte()
@@ -25,7 +25,6 @@
 		const mesh = new Mesh(geometry, material)
 		mesh.castShadow = mesh.receiveShadow = true
 		mesh.position.y = 3
-
 		return mesh
 	}
 
@@ -40,10 +39,6 @@
 		scene.fog = new Fog('#000', 2, 10)
 		return () => (scene.fog = null)
 	})
-
-	let c = new Color('#FF4F4F')
-
-	let color1 = $state()
 
 	const light = new DirectionalLight()
 

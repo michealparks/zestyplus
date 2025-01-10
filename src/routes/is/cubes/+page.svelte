@@ -1,11 +1,12 @@
 <script lang="ts">
 	import {
-		BoxGeometry,
+		Points,
 		Color,
 		DirectionalLight,
 		InstancedMesh,
 		Matrix4,
 		MeshStandardMaterial,
+		Object3D,
 		Quaternion,
 		Vector3,
 	} from 'three'
@@ -56,7 +57,7 @@
 	const light = new DirectionalLight()
 	scene.add(light.target)
 
-	let stars
+	let stars: Points | undefined
 
 	useTask((delta) => {
 		camera.current.position.z -= delta * 20
@@ -107,6 +108,7 @@
 	position.y={2}
 	intensity={0.5}
 />
+
 <T.AmbientLight intensity={0.5} />
 
 <T is={mesh}>

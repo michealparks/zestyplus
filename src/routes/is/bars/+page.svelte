@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Color } from 'three'
+	import { Color, InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { Outlines } from '@threlte/extras'
 	import { useAnalyser, hueShift } from '$lib'
@@ -7,25 +7,44 @@
 	const { size } = useThrelte()
 	const { frequencyData } = useAnalyser()
 
-	const count = 60
+	const count = 72
 	const gap = 1
 	const offset = (count * gap) / 2
 
-	let z
+	const color = new Color('red')
+	const position = new Vector3()
+	const quaternion = new Quaternion()
+	const scale = new Vector3(1, 1, 1)
+	const matrix = new Matrix4()
+	const mesh = new InstancedMesh(undefined, undefined, count)
 
-	const positions: [number, number, number][] = $state([])
-	for (let i = 0; i < count; i++) {
-		positions.push([0, i * gap - offset, 0])
+	for (let i = 0; i < count; i += 1) {
+		position.set(0, 0, i * gap - offset)
+		matrix.setPosition(position)
+		mesh.setMatrixAt(i, matrix)
+		mesh.setColorAt(i, hueShift(color, i / 10000))
+	}
+
+	mesh.instanceMatrix.needsUpdate = true
+	if (mesh.instanceColor) {
+		mesh.instanceColor.needsUpdate = true
 	}
 
 	useTask(() => {
 		for (let i = 0, l = count; i < l; i += 1) {
-			let barHeight = frequencyData.current[i]
-			positions[i][2] = barHeight / 75
-		}
-	})
+			const barHeight = frequencyData.current[i]
 
-	const color = new Color('red')
+			if (barHeight) {
+				mesh.getMatrixAt(i, matrix)
+				matrix.decompose(position, quaternion, scale)
+				position.y = barHeight / 75
+				scale.set(1, position.y * 4 + 1, 1)
+				matrix.compose(position, quaternion, scale)
+				mesh.setMatrixAt(i, matrix)
+			}
+		}
+		mesh.instanceMatrix.needsUpdate = true
+	})
 </script>
 
 <T.OrthographicCamera
@@ -58,17 +77,8 @@
 	<T.MeshStandardMaterial color="black" />
 </T.Mesh>
 
-{#each positions as position, index}
-	<T.Mesh
-		position.x={position[0]}
-		position.z={position[1]}
-		position.y={position[2]}
-		scale.y={position[2] * 4 + 1}
-		castShadow
-		receiveShadow
-	>
-		<T.BoxGeometry args={[0.5, 0.5, 0.5]} />
-		<T.MeshStandardMaterial color={hueShift(color, index / 10000)} />
-		<Outlines color="black" />
-	</T.Mesh>
-{/each}
+<T is={mesh}>
+	<T.BoxGeometry args={[0.5, 0.5, 0.5]} />
+	<T.MeshStandardMaterial />
+	<Outlines color="black" />
+</T>

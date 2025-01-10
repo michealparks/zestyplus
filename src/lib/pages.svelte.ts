@@ -1,7 +1,7 @@
 import { goto } from '$app/navigation'
 
 export const modules = import.meta.glob('../routes/**/*.*')
-export const omit = ['just4jon', 'tubeman']
+export const omit = ['just4jon']
 
 export const pages = [
 	...new Set(
@@ -11,15 +11,6 @@ export const pages = [
 			.filter((path) => !omit.includes(path))
 	),
 ]
-
-console.log(Object.keys(modules).map((path) => path.split('/')[3]))
-console.log(
-	Object.keys(modules)
-		.map((path) => path.split('/')[3])
-		.filter((path) => path !== undefined && !path.startsWith('+'))
-		.filter((path) => !omit.includes(path))
-)
-console.log(pages)
 
 export const transitionPage = (direction: 1 | -1) => {
 	const currentPage = window.location.pathname.replace('/is/', '')

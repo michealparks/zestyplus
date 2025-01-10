@@ -4,10 +4,10 @@
 	import { VirtualEnvironment, TransformControls } from '@threlte/extras'
 
 	type Props = {
-		color1: ColorRepresentation
-		color2: ColorRepresentation
-		color3: ColorRepresentation
-		debug: boolean
+		color1?: ColorRepresentation
+		color2?: ColorRepresentation
+		color3?: ColorRepresentation
+		debug?: boolean
 	}
 
 	let {
@@ -23,6 +23,7 @@
 		color1
 		color2
 		color3
+		// @ts-expect-error
 		virtualEnvironment?.update()
 	})
 </script>
