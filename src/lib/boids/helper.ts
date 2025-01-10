@@ -72,10 +72,10 @@ export class ControlHelper {
 	}
 
 	updateButtonLabels() {
-		this.boidsButton.name(
+		this.boidsButton?.name(
 			'Add Boids (' + this.boidsController.getFlockEntities().length + ')'
 		)
-		this.obstacleButton.name(
+		this.obstacleButton?.name(
 			'Add Obs (' + this.boidsController.getObstacleEntities().length + ')'
 		)
 	}

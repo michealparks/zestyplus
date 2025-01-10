@@ -1,7 +1,7 @@
 <script lang="ts">
 	import QrCreator from 'qr-creator'
 	import { PersistedState } from 'runed'
-	import { useTrack } from '$lib/track.svelte'
+	import { useTrack } from '$lib/hooks/track.svelte'
 	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
 
 	const showQR = new PersistedState('show-playlist-qr-code', false)

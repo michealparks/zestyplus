@@ -100,7 +100,7 @@
 	infiniteGrid
 	type="lines"
 	axis="x"
-	cellColor="white"
+	cellColor={new Color(0.1, 0.1, 0.1)}
 	sectionColor="white"
 />
 

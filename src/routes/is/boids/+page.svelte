@@ -13,7 +13,6 @@
 		Vector3,
 		Quaternion,
 		Color,
-		MeshBasicMaterial,
 	} from 'three'
 	import { OrbitControls } from '@threlte/extras'
 	import { hueShift, useAnalyser } from '$lib'
@@ -40,7 +39,7 @@
 	workerPlanner.init()
 
 	const controlHelper = new ControlHelper(boidsController, workerPlanner)
-	controlHelper.addDebugControls()
+	// controlHelper.addDebugControls()
 
 	// add initial entities for an interesting view
 	controlHelper.addBoids(flockEntityCount)
@@ -182,7 +181,7 @@
 	position={[-boundary[0] / 2, -boundary[1] / 2, -boundary[2] / 2]}
 >
 	<T.ConeGeometry
-		args={[3, 5]}
+		args={[2, 5]}
 		oncreate={(ref) => {
 			ref.rotateX(Math.PI / 2)
 		}}

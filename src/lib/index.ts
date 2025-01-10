@@ -1,4 +1,4 @@
 export { useAnalyser } from './analyser'
-export { useAuth } from './auth.svelte'
+export { useAuth } from './hooks/auth.svelte'
 export { hueShift } from './color'
-export { useTrack } from './track.svelte'
+export { useTrack } from './hooks/track.svelte'

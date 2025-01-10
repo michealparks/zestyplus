@@ -1,7 +1,8 @@
 import { goto } from '$app/navigation'
+import { shuffle } from './array'
 
 export const modules = import.meta.glob('../routes/**/*.*')
-export const omit = ['just4jon']
+export const omit: string[] = []
 
 export const pages = [
 	...new Set(
@@ -11,6 +12,7 @@ export const pages = [
 			.filter((path) => !omit.includes(path))
 	),
 ]
+shuffle(pages)
 
 export const transitionPage = (direction: 1 | -1) => {
 	const currentPage = window.location.pathname.replace('/is/', '')
