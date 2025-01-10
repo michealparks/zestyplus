@@ -1,0 +1,1 @@
+const d=(t,o,n,s)=>{for(let e=t.length-1;e>=3;e--)t[e]=t[e-3];return t[0]=o,t[1]=n,t[2]=s,t},f=t=>{for(let o=t.length-1;o>0;o--){const n=Math.floor(Math.random()*(o+1));[t[o],t[n]]=[t[n],t[o]]}};export{d as a,f as s};
