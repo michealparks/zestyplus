@@ -1,0 +1,1 @@
+import{u as t,aa as a,ab as u,G as c,I as e}from"./runtime.XPaRurxh.js";function l(n){t===null&&a(),u&&t.l!==null?s(t).m.push(n):c(()=>{const o=e(n);if(typeof o=="function")return o})}function i(n){t===null&&a(),l(()=>()=>e(n))}function s(n){var o=n.l;return o.u??(o.u={a:[],b:[],m:[]})}export{i as a,l as o};
