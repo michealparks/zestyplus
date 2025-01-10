@@ -13,17 +13,17 @@
 	</p>
 
 	<div class="flex gap-2">
-		<button
+		<a
 			class="flex items-center gap-1 bg-slate-600 px-3 py-1 text-white"
-			onclick={() => goto('/is/lines')}
+			href="/is/lines"
 		>
 			<span class="text-xs">get zesty</span> 🤌
-		</button>
-		<button
+		</a>
+		<a
 			class="flex items-center gap-1 bg-slate-600 px-3 py-1 text-white"
-			onclick={() => goto('/about')}
+			href="/about"
 		>
 			<span class="text-xs">what the zest?</span> 🧐
-		</button>
+		</a>
 	</div>
 </div>

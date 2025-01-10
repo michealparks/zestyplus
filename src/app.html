@@ -2,11 +2,31 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link
+			rel="icon"
+			href="%sveltekit.assets%/favicon.png"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+		<!-- Google tag (gtag.js) -->
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-5CM1E4R7G4"
+		></script>
+		<script>
+			window.dataLayer ??= []
+			const gtag = (...args) => dataLayer.push(args)
+			gtag('js', new Date())
+			gtag('config', 'G-5CM1E4R7G4')
+		</script>
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
+	<body
+		data-sveltekit-preload-data="hover"
+		data-theme="vintage"
+	>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
