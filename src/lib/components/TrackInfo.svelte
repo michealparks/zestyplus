@@ -3,7 +3,7 @@
 
 	import { PersistedState } from 'runed'
 	import { useTrack } from '$lib'
-	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
+	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 
 	const { track } = useTrack()
 

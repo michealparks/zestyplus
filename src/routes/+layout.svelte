@@ -2,7 +2,7 @@
 	import '../app.css'
 
 	import { preload } from '$lib/preload'
-	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
+	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 
 	let { children } = $props()
 

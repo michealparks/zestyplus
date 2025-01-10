@@ -4,7 +4,7 @@
 
 	import Spotify from './Spotify.svelte'
 	import Logo from './Logo.svelte'
-	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
+	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 
 	const open = new PersistedState('settings-open', false)
 	const idle = new IsIdle({ timeout: 3000 })
@@ -24,14 +24,12 @@
 			viewBox="0 0 32 32"
 		>
 			<path
-				d="M13,16c0,1.654,1.346,3,3,3s3-1.346,3-3s-1.346-3-3-3S13,14.346,13,16z"
+				d="M13,16c0,1.65,1.34,3,3,3s3-1.34,3-3s-1.34-3-3-3S13,14.34,13,16z"
 			/>
 			<path
-				d="M13,26c0,1.654,1.346,3,3,3s3-1.346,3-3s-1.346-3-3-3S13,24.346,13,26z"
+				d="M13,26c0,1.65,1.34,3,3,3s3-1.34,3-3s-1.34-3-3-3S13,24.34,13,26z"
 			/>
-			<path
-				d="M13,6c0,1.654,1.346,3,3,3s3-1.346,3-3s-1.346-3-3-3S13,4.346,13,6z"
-			/>
+			<path d="M13,6c0,1.654,1.34,3,3,3s3-1.34,3-3s-1.34-3-3-3S13,4.34,13,6z" />
 		</svg>
 	</button>
 {/if}
@@ -39,7 +37,7 @@
 {#if open.current}
 	<button
 		aria-label="Exit settings"
-		class="absolute left-0 top-0 z-20 grid h-screen w-screen cursor-default backdrop-blur-sm"
+		class="absolute left-0 top-0 z-20 grid h-screen w-screen cursor-default bg-black opacity-80"
 		onclick={(event) => {
 			if (event.target === event.currentTarget) {
 				open.current = false
@@ -52,8 +50,12 @@
 		<div
 			class="pointer-events-auto h-44 w-80 rounded-sm bg-white p-2 shadow-xl"
 		>
-			<div class="-mt-12 mb-4 flex w-full justify-center">
-				<Logo class="w-24" />
+			<div class="-mt-10 mb-4 flex w-full justify-center">
+				<img
+					alt=""
+					width="200"
+					src="/zestyplus2.png"
+				/>
 			</div>
 
 			<div class="flex justify-center">

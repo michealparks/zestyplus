@@ -1,5 +1,5 @@
 import { goto } from '$app/navigation'
-import { shuffle } from './array'
+import { shuffle } from '../array'
 
 export const modules = import.meta.glob('../routes/**/*.*')
 export const omit: string[] = []

@@ -22,12 +22,14 @@
 	"
 >
 	<Logo class="w-[40%]" />
-	<div class="flex gap-12 py-4 text-white opacity-70">
+	<div
+		class="flex flex-col gap-4 px-12 py-4 text-xs text-white opacity-80 sm:flex-row sm:gap-12 md:text-sm"
+	>
 		<div class="flex items-center gap-2">
 			<img
 				width="50"
 				alt=""
-				src="{musicIcons[(Math.random() * musicIcons.length) | 0]}.png"
+				src="/{musicIcons[(Math.random() * musicIcons.length) | 0]}.png"
 			/>
 			<p class="w-36">
 				zesty.plus is a <strong class="text-primary-500"
@@ -40,7 +42,7 @@
 			<img
 				width="50"
 				alt=""
-				src="mic.png"
+				src="/mic.png"
 			/>
 			<p class="w-40">
 				it will request <strong class="text-tertiary-500"
@@ -53,7 +55,7 @@
 			<img
 				width="50"
 				alt=""
-				src="shh.png"
+				src="/shh.png"
 			/>
 			<p class="w-32">
 				all data stays on <strong class="text-success-500">your machine</strong>

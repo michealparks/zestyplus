@@ -5,8 +5,6 @@
 		DirectionalLight,
 		InstancedMesh,
 		Matrix4,
-		MeshStandardMaterial,
-		Object3D,
 		Quaternion,
 		Vector3,
 	} from 'three'

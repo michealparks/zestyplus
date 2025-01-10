@@ -1,5 +1,5 @@
 import { preloadCode } from '$app/navigation'
-import { pages } from './pages.svelte'
+import { pages } from './hooks/pages.svelte'
 
 export const preload = () => {
 	const toLoad = [...pages]

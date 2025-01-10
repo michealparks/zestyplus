@@ -9,7 +9,6 @@
 			const coin = Math.random() > 0
 
 			if (coin) {
-				console.log(coin)
 				costco = true
 				setTimeout(() => {
 					costco = false

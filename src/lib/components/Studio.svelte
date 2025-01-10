@@ -2,7 +2,7 @@
 	import { PersistedState } from 'runed'
 
 	import Scene from './Scene.svelte'
-	import { Keybindings, useKeybinding } from '../keybindings.svelte'
+	import { Keybindings, useKeybinding } from '../hooks/keybindings.svelte'
 
 	let { children } = $props()
 

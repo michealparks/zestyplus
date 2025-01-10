@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onNavigate } from '$app/navigation'
-	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
-	import { transitionPage } from '$lib/pages.svelte'
+	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
+	import { transitionPage } from '$lib/hooks/pages.svelte'
 
 	onNavigate((navigation) => {
 		if (!document.startViewTransition) return

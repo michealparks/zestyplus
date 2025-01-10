@@ -2,7 +2,7 @@
 	import QrCreator from 'qr-creator'
 	import { PersistedState } from 'runed'
 	import { useTrack } from '$lib/hooks/track.svelte'
-	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
+	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 
 	const showQR = new PersistedState('show-playlist-qr-code', false)
 

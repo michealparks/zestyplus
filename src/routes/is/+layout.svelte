@@ -2,7 +2,7 @@
 	import { Canvas } from '@threlte/core'
 	import { PersistedState } from 'runed'
 	import { onNavigate } from '$app/navigation'
-	import { schedulePageCycle } from '$lib/pages.svelte'
+	import { schedulePageCycle } from '$lib/hooks/pages.svelte'
 	import { useAnalyser } from '$lib'
 
 	import Scene from '$lib/components/Scene.svelte'
@@ -13,7 +13,7 @@
 	import Countdown from '$lib/components/Countdown.svelte'
 	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
 	import Costco from '$lib/components/Costco.svelte'
-	import { Keybindings, useKeybinding } from '$lib/keybindings.svelte'
+	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 
 	let { children } = $props()
 
