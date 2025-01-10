@@ -1,0 +1,1 @@
+import{b as c,E as s,a as i,h as r,l as h,G as p,c as d}from"./runtime.TNfRlsGO.js";function m(t,f,o){r&&h();var n=t,a,e;c(()=>{a!==(a=f())&&(e&&(p(e),e=null),a&&(e=i(()=>o(n,a))))},s),r&&(n=d)}export{m as c};

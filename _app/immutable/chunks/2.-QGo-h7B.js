@@ -1,1 +1,0 @@
-import"./disclose-version.Bg9kRutz.js";import"./legacy.CtaTdtmd.js";function e(o){}const r=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));export{e as _,r as a};
