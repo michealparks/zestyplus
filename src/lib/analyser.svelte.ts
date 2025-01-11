@@ -54,12 +54,20 @@ const startAnalyser = async () => {
 	}
 
 	getByteFrequency()
+	requestAnimationFrame(() => (analyserReady.current = true))
 }
 
-export const useAnalyser = () => {
-	return {
-		fttSize,
-		frequencyData,
-		startAnalyser,
-	}
+class Ready {
+	current = $state(false)
 }
+
+const analyserReady = new Ready()
+
+const context = {
+	fttSize,
+	frequencyData,
+	analyserReady,
+	startAnalyser,
+}
+
+export const useAnalyser = () => context

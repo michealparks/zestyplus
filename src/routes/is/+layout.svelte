@@ -14,6 +14,7 @@
 	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
 	import Costco from '$lib/components/Costco.svelte'
 	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
+	import PageSelector from '$lib/components/PageSelector.svelte'
 
 	let { children } = $props()
 
@@ -56,6 +57,7 @@
 </div>
 
 <PageTransition />
+<PageSelector />
 <Settings />
 <TrackInfo />
 <Countdown />

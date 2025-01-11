@@ -1,8 +1,15 @@
 <script lang="ts">
 	import { useTask, useThrelte } from '@threlte/core'
-	import { EffectComposer, EffectPass, RenderPass, BloomEffect, KernelSize } from 'postprocessing'
+	import {
+		EffectComposer,
+		EffectPass,
+		RenderPass,
+		BloomEffect,
+		KernelSize,
+	} from 'postprocessing'
 
-	const { scene, renderer, camera, size, autoRender, renderStage } = useThrelte()
+	const { scene, renderer, camera, size, autoRender, renderStage } =
+		useThrelte()
 
 	const composer = new EffectComposer(renderer)
 
@@ -14,7 +21,7 @@
 				$camera,
 				new BloomEffect({
 					intensity: 0.8,
-					luminanceThreshold: 0.15,
+					luminanceThreshold: 0.1,
 					height: 1024,
 					width: 1024,
 					luminanceSmoothing: 0.5,

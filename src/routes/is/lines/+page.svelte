@@ -6,8 +6,9 @@
 	import { hueShift } from '$lib/color'
 	import { useAnalyser } from '$lib'
 	import { Color, Mesh, Vector3 } from 'three'
+	import { fade } from '$lib/transitions'
 
-	const { frequencyData } = useAnalyser()
+	const { frequencyData, analyserReady } = useAnalyser()
 	const { camera } = useThrelte()
 
 	let numLines = 60
@@ -27,7 +28,13 @@
 		const geometry = new LineGeometry()
 		const material = new LineMaterial()
 
+		const dir = i % 2 === 0 ? 1 : -1
 		const positions = new Float32Array(lineLength * 3)
+
+		for (let j = 0, l = lineLength * 3; j < l; j += 3) {
+			positions[j + 0] = dir * 10
+			positions[j + 1] = i / 5
+		}
 		geometry.setPositions(positions)
 
 		lines.push({
@@ -45,22 +52,34 @@
 		if (grid !== undefined) {
 			grid.position.z = z
 		}
+	})
 
-		for (let i = 0, l = lines.length; i < l; i += 1) {
-			const line = lines[i]
-			const dir = i % 2 === 0 ? 1 : -1
-			const fft = frequencyData.current[i]
+	const { start } = useTask(
+		() => {
+			const { z } = camera.current.position
 
-			if (fft === undefined) continue
+			for (let i = 0, l = lines.length; i < l; i += 1) {
+				const line = lines[i]
+				const dir = i % 2 === 0 ? 1 : -1
+				const fft = frequencyData.current[i]
 
-			const x = (fft / 20) * dir
+				if (fft === undefined) continue
 
-			shiftAndAddVector(line.positions, x, i / 5, z - 10)
-			line.geometry.setPositions(line.positions)
+				const x = (fft / 20) * dir
+
+				shiftAndAddVector(line.positions, x, i / 5, z - 10)
+				line.geometry.setPositions(line.positions)
+			}
+		},
+		{ autoStart: false }
+	)
+
+	$effect(() => {
+		if (analyserReady.current) {
+			setTimeout(() => start(), 500)
 		}
 	})
 
-	let views = []
 	let view = $state('forward')
 
 	const target = new Vector3()
@@ -91,9 +110,7 @@
 	fov={100}
 	position={[0, 4, 10]}
 	oncreate={(ref) => ref.lookAt(0, 2, 0)}
->
-	<OrbitControls />
-</T.PerspectiveCamera>
+></T.PerspectiveCamera>
 
 <Grid
 	bind:ref={grid}
@@ -108,9 +125,9 @@
 	<T is={Line2}>
 		<T
 			is={line.material}
-			transparent
 			linewidth={1.5}
 			color={hueShift(color, index / 2000)}
+			transition={fade}
 		/>
 		<T is={line.geometry} />
 	</T>

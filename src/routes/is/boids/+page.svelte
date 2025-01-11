@@ -101,6 +101,8 @@
 	const quaternion = new Quaternion()
 	const scale = new Vector3(1, 1, 1)
 
+	let ballIndex = 0
+
 	useTask(() => {
 		const entities = boidsController.getFlockEntities()
 
@@ -133,11 +135,11 @@
 
 		const obstacles = boidsController.getObstacleEntities()
 		for (let i = 0, l = obstacles.length; i < l; i += 1) {
-			obstacleMesh.setColorAt(i, hueShift(color, frequencyData.current[i]))
+			// obstacleMesh.setColorAt(i, hueShift(color, frequencyData.current[i]))
 		}
-		if (obstacleMesh.instanceColor) {
-			obstacleMesh.instanceColor.needsUpdate = true
-		}
+		// if (obstacleMesh.instanceColor) {
+		// 	obstacleMesh.instanceColor.needsUpdate = true
+		// }
 	})
 
 	$effect(() => {
@@ -149,7 +151,7 @@
 			position.set(x, y, z)
 			matrix.compose(position, quaternion, scale)
 			obstacleMesh.setMatrixAt(i, matrix)
-			obstacleMesh.setColorAt(i, color)
+			obstacleMesh.setColorAt(i, hueShift(color, i / 2000))
 		}
 		obstacleMesh.instanceMatrix.needsUpdate = true
 		if (obstacleMesh.instanceColor) {
@@ -189,13 +191,20 @@
 	<T.MeshNormalMaterial />
 </T>
 
+<T.DirectionalLight
+	position={[10, 10, 10]}
+	intensity={1}
+/>
+<T.AmbientLight intensity={2} />
+
 <T
 	is={obstacleMesh}
 	frustumCulled={false}
 	position={[-boundary[0] / 2, -boundary[1] / 2, -boundary[2] / 2]}
 >
 	<T.SphereGeometry args={[20]} />
-	<T.MeshBasicMaterial />
+	<!-- <T.MeshBasicMaterial /> -->
+	<T.MeshStandardMaterial roughness={0.1} />
 </T>
 
 <!-- <T.LineSegments args={[]}>

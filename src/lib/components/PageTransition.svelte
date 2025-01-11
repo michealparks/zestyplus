@@ -32,10 +32,10 @@
 	}
 
 	:root::view-transition-old(root) {
-		animation: 2s cubic-bezier(0.4, 0, 1, 1) both fade-out;
+		animation: 1s cubic-bezier(0.4, 0, 1, 1) both fade-out;
 	}
 
 	:root::view-transition-new(root) {
-		animation: 2s cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in;
+		animation: 1s cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in;
 	}
 </style>
