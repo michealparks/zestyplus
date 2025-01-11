@@ -1,7 +1,12 @@
 import { browser } from '$app/environment'
 
-const clientId = 'c80e549f03864691a94b026c06619501' // your clientId
-const redirectUrl = 'http://localhost:5173' // your redirect URL - must be localhost URL and/or HTTPS
+// your clientId
+const clientId = 'c80e549f03864691a94b026c06619501'
+
+// your redirect URL - must be localhost URL and/or HTTPS
+const redirectUrl = import.meta.env.DEV
+	? 'http://localhost:5173'
+	: 'https://zesty.plus'
 
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize'
 const tokenEndpoint = 'https://accounts.spotify.com/api/token'
