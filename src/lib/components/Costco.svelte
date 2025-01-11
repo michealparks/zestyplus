@@ -1,5 +1,5 @@
 <script>
-	let costco = $state(false)
+	let costco = $state(true)
 
 	let interval = 1000 * 20
 
@@ -24,11 +24,11 @@
 </script>
 
 {#if costco}
-	<div class="costco h-screen">
+	<div class="costco z-10 h-screen">
 		<img
-			class="costco absolute left-0 scale-[2.5] opacity-20"
-			src="costco.png"
-			alt=""
+			class="costco pointer-events-none absolute left-0 top-0 scale-[2.5] opacity-20"
+			src="/costco.png"
+			alt="Costco"
 		/>
 	</div>
 {/if}

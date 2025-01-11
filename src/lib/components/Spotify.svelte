@@ -6,7 +6,7 @@
 
 {#snippet Button(text: string, onclick: () => void)}
 	<button
-		class="flex gap-1 bg-zinc-900 px-2 py-1 text-xs text-slate-100"
+		class="variant-filled-surface btn btn-md flex gap-1 bg-zinc-900 text-xs text-slate-100"
 		{onclick}
 	>
 		<svg
