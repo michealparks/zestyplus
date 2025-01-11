@@ -1,1 +1,0 @@
-import{P as c,Q as s,o as i,q as r,h,V as d,d as p}from"./runtime.XPaRurxh.js";function u(o,t,f){r&&h();var n=o,a,e;c(()=>{a!==(a=t())&&(e&&(d(e),e=null),a&&(e=i(()=>f(n,a))))},s),r&&(n=p)}export{u as c};
