@@ -21,14 +21,14 @@
     background-size: cover;
 	"
 >
-	<div class="relative w-[40%]">
+	<div class="relative w-3/4 sm:w-[40%]">
 		<img
 			alt=""
 			src="zesty.png"
 		/>
 		<img
 			alt=""
-			class="absolute bottom-0 right-0 -mr-8 w-[40%]"
+			class="absolute bottom-0 right-0 -mr-4 w-[40%]"
 			src="plus.png"
 		/>
 	</div>
@@ -74,7 +74,7 @@
 		</div>
 	</div>
 
-	<div class="flex w-40 gap-2">
+	<div class="flex gap-2">
 		<a
 			class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-gradient-to-br"
 			href="/is/lines"
