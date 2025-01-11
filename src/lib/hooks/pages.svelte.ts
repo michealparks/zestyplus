@@ -2,7 +2,7 @@ import { goto } from '$app/navigation'
 import { shuffle } from '../array'
 import { modules } from '../../modules'
 
-export const omit: string[] = []
+export const omit: string[] = ['tubeman']
 
 export const pages = [
 	...new Set(
@@ -12,7 +12,6 @@ export const pages = [
 			.filter((path) => !omit.includes(path))
 	),
 ]
-console.log(pages)
 shuffle(pages)
 
 export const transitionPage = (direction: 1 | -1) => {

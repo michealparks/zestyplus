@@ -34,5 +34,35 @@
 				<span class="text-xs">get zesty</span> 🤌
 			</a>
 		</div>
+
+		<div class="flex flex-col gap-2 pt-12 text-sm">
+			<div>
+				Emojis by <a
+					class="code"
+					href="https://emojikitchen.dev/"
+					target="_blank">Emoji Kitchen</a
+				>
+			</div>
+			<div>
+				Hot dog model by <a
+					class="code"
+					href="https://skfb.ly/oqMWM"
+					target="_blank">TadenStar</a
+				>
+			</div>
+			<div>
+				Powered by <a
+					class="code"
+					target="_blank"
+					href="https://svelte.dev">Svelte</a
+				>
+				and
+				<a
+					class="code"
+					target="_blank"
+					href="https://threlte.xyz">Threlte</a
+				>
+			</div>
+		</div>
 	</div>
 </div>
