@@ -21,7 +21,18 @@
     background-size: cover;
 	"
 >
-	<Logo class="w-[40%]" />
+	<div class="relative w-[40%]">
+		<img
+			alt=""
+			src="zesty.png"
+		/>
+		<img
+			alt=""
+			class="absolute bottom-0 right-0 -mr-8 w-[40%]"
+			src="plus.png"
+		/>
+	</div>
+
 	<div
 		class="flex flex-col gap-4 px-12 py-4 text-xs text-white opacity-80 sm:flex-row sm:gap-12 md:text-sm"
 	>
