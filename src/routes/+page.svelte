@@ -24,12 +24,19 @@
 	<div class="relative w-3/4 sm:w-[40%]">
 		<img
 			alt=""
-			src="zesty.png"
+			src="/boom.png"
+			class="absolute bottom-0 left-1/2 -translate-x-1/2"
+			width="370"
+		/>
+		<img
+			alt=""
+			src="/zesty.png"
+			class="relative"
 		/>
 		<img
 			alt=""
 			class="absolute bottom-0 right-0 -mr-4 w-[40%]"
-			src="plus.png"
+			src="/plus.png"
 		/>
 	</div>
 
