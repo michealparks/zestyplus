@@ -10,7 +10,12 @@ const fttSize = 1024
 
 const createAnalyser = async () => {
 	// 1. Get access to the user's microphone
-	const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+	const stream = await navigator.mediaDevices.getUserMedia({
+		audio: {
+			backgroundBlur: false,
+			echoCancellation: false,
+		},
+	})
 
 	// 2. Create a Web Audio context
 	const audioContext = new AudioContext()
