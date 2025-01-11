@@ -3,20 +3,20 @@
 	import { PersistedState, IsIdle } from 'runed'
 
 	import Spotify from './Spotify.svelte'
-	import Logo from './Logo.svelte'
 	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 
-	const open = new PersistedState('settings-open', false)
+	let open = $state(false)
+
 	const idle = new IsIdle({ timeout: 3000 })
 
-	useKeybinding(Keybindings.Settings, () => (open.current = !open.current))
+	useKeybinding(Keybindings.Settings, () => (open = !open))
 </script>
 
 {#if !idle.current}
 	<button
 		class="absolute right-2 top-2 z-10 h-6 w-6 p-1"
 		aria-label="Open settings"
-		onclick={() => (open.current = !open.current)}
+		onclick={() => (open = !open)}
 		transition:fade
 	>
 		<svg
@@ -34,13 +34,13 @@
 	</button>
 {/if}
 
-{#if open.current}
+{#if open}
 	<button
 		aria-label="Exit settings"
 		class="absolute left-0 top-0 z-20 grid h-screen w-screen cursor-default bg-black opacity-80"
 		onclick={(event) => {
 			if (event.target === event.currentTarget) {
-				open.current = false
+				open = false
 			}
 		}}
 	></button>
