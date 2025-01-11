@@ -40,7 +40,7 @@
 			<img
 				width="50"
 				alt=""
-				src="/{musicIcons[(Math.random() * musicIcons.length) | 0]}.png"
+				src="/explode.png"
 			/>
 			<p class="w-36">
 				zesty.plus is a <strong class="text-primary-500"
