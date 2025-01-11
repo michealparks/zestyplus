@@ -15,13 +15,13 @@
 </script>
 
 {#if enableStudio.current}
-	{#await import('@threlte/studio') then { Studio }}
+	<!-- {#await import('@threlte/studio') then { Studio }}
 		<Studio>
 			<Scene>
 				{@render children()}
 			</Scene>
 		</Studio>
-	{/await}
+	{/await} -->
 {:else}
 	<Scene>
 		{@render children()}
