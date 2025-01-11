@@ -43,7 +43,7 @@
 				src="/explode.png"
 			/>
 			<p class="w-36">
-				zesty.plus is a <strong class="text-primary-500"
+				zesty.plus is a <br /><strong class="text-primary-500"
 					>music visualizer</strong
 				>
 			</p>
