@@ -60,7 +60,7 @@
 <PageSelector />
 <Settings />
 <TrackInfo />
-<Countdown />
+<!-- <Countdown /> -->
 <PlaylistQr />
 
 {#if costcoMode.current}
