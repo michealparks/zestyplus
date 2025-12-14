@@ -2,12 +2,13 @@
 	import { Mesh } from 'three'
 	import { T } from '@threlte/core'
 	import { useGltf, OrbitControls } from '@threlte/extras'
-	import { World, Collider, RigidBody } from '@threlte/rapier'
+	import { Collider, RigidBody } from '@threlte/rapier'
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
 
 	const count = 15
 
 	let nodes: Mesh[] = $state([])
+	let timeoutIds = new Set<number>()
 
 	useGltf('/hotdog.glb').then((dog) => {
 		nodes.push(
@@ -38,6 +39,14 @@
 			true
 		)
 	}
+
+	$effect(() => {
+		return () => {
+			for (const id of timeoutIds) {
+				clearTimeout(id)
+			}
+		}
+	})
 </script>
 
 <T.PerspectiveCamera
@@ -47,39 +56,37 @@
 	<OrbitControls />
 </T.PerspectiveCamera>
 
-<World gravity={[0, -1, 0]}>
-	{#if nodes.length > 0}
-		{#each { length: count }, index}
-			<RigidBody
-				type="dynamic"
-				oncreate={(ref) => {
-					ref.setTranslation({ x: 0, y: -20, z: 0 }, true)
-					setTimeout(() => reset(ref), index * 1000)
-				}}
-			>
-				<Collider
-					shape={'cuboid'}
-					args={[0.5, 0.5, 0.5]}
-				/>
-				<T.Group scale={0.0015}>
-					{#each nodes as node (node.uuid)}
-						<T is={node.clone(true)} />
-					{/each}
-				</T.Group>
-			</RigidBody>
-		{/each}
-	{/if}
-
-	<T.Group position.y={-15}>
-		<Collider
-			shape="cuboid"
-			sensor
-			args={[100, 5, 100]}
-			onsensorenter={(event) => {
-				if (event.targetRigidBody) {
-					reset(event.targetRigidBody)
-				}
+{#if nodes.length > 0}
+	{#each { length: count }, index}
+		<RigidBody
+			type="dynamic"
+			oncreate={(ref) => {
+				ref.setTranslation({ x: 0, y: -20, z: 0 }, true)
+				timeoutIds.add(setTimeout(() => reset(ref), index * 1000))
 			}}
-		/>
-	</T.Group>
-</World>
+		>
+			<Collider
+				shape={'cuboid'}
+				args={[0.5, 0.5, 0.5]}
+			/>
+			<T.Group scale={0.0015}>
+				{#each nodes as node (node.uuid)}
+					<T is={node.clone(true)} />
+				{/each}
+			</T.Group>
+		</RigidBody>
+	{/each}
+{/if}
+
+<T.Group position.y={-15}>
+	<Collider
+		shape="cuboid"
+		sensor
+		args={[100, 5, 100]}
+		onsensorenter={(event) => {
+			if (event.targetRigidBody) {
+				reset(event.targetRigidBody)
+			}
+		}}
+	/>
+</T.Group>

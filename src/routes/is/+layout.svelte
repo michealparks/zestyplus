@@ -4,6 +4,7 @@
 	import { onNavigate } from '$app/navigation'
 	import { schedulePageCycle } from '$lib/hooks/pages.svelte'
 	import { useAnalyser } from '$lib'
+	import { AutoColliders, RigidBody, World } from '@threlte/rapier'
 
 	import Scene from '$lib/components/Scene.svelte'
 	import Studio from '$lib/components/Studio.svelte'
@@ -42,17 +43,19 @@
 	)
 </script>
 
-<div class="absolute left-0 top-0 h-screen w-screen">
+<div class="relative h-screen w-screen">
 	<Canvas>
-		{#if import.meta.env.MODE === 'development'}
-			<Studio>
-				{@render children()}
-			</Studio>
-		{:else}
-			<Scene>
-				{@render children()}
-			</Scene>
-		{/if}
+		<World gravity={[0, -1, 0]}>
+			{#if import.meta.env.MODE === 'development'}
+				<Studio>
+					{@render children()}
+				</Studio>
+			{:else}
+				<Scene>
+					{@render children()}
+				</Scene>
+			{/if}
+		</World>
 	</Canvas>
 </div>
 

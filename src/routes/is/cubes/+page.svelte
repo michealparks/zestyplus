@@ -55,7 +55,7 @@
 	const light = new DirectionalLight()
 	scene.add(light.target)
 
-	let stars: Points | undefined
+	let stars = $state.raw<Points>()
 
 	useTask((delta) => {
 		camera.current.position.z -= delta * 20

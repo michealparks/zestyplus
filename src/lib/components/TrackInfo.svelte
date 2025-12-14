@@ -13,8 +13,6 @@
 		Keybindings.TrackInfo,
 		() => (visible.current = !visible.current)
 	)
-
-	$inspect(track.current)
 </script>
 
 {#if visible.current && track.current}
@@ -54,7 +52,7 @@
 				href={item.external_urls.spotify}
 				target="_blank"
 			>
-				<p class="text-lg font-bold leading-none">
+				<p class="text-lg leading-none font-bold">
 					{item.name}
 				</p>
 			</a>

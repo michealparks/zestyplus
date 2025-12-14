@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition'
-	import { PersistedState, IsIdle } from 'runed'
+	import { IsIdle } from 'runed'
 
 	import Spotify from './Spotify.svelte'
 	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
@@ -14,7 +14,7 @@
 
 {#if !idle.current}
 	<button
-		class="absolute right-2 top-2 z-10 h-6 w-6 p-1"
+		class="absolute top-2 right-2 z-10 h-6 w-6 p-1"
 		aria-label="Open settings"
 		onclick={() => (open = !open)}
 		transition:fade
@@ -37,7 +37,7 @@
 {#if open}
 	<button
 		aria-label="Exit settings"
-		class="absolute left-0 top-0 z-20 grid h-screen w-screen cursor-default bg-black opacity-80"
+		class="absolute top-0 left-0 z-20 grid h-screen w-screen cursor-default bg-black opacity-80"
 		onclick={(event) => {
 			if (event.target === event.currentTarget) {
 				open = false
@@ -45,7 +45,7 @@
 		}}
 	></button>
 	<div
-		class="pointer-events-none absolute left-0 top-0 z-20 grid h-screen w-screen place-content-center"
+		class="pointer-events-none absolute top-0 left-0 z-20 grid h-screen w-screen place-content-center"
 	>
 		<div
 			class="card pointer-events-auto w-80 rounded-sm bg-white p-4 shadow-xl"
@@ -75,7 +75,7 @@
 
 				<div class="flex flex-col justify-between gap-1.5 text-xs">
 					<h4 class="text-sm"><strong>Keybindings</strong></h4>
-					{#each [['←', 'Previous page'], ['→', 'Next page'], ['F', 'Fullscreen'], ['C', 'Costco mode']] as [key, label]}
+					{#each [['←', 'Previous page'], ['→', 'Next page'], ['F', 'Fullscreen'], ['C', 'Costco mode']] as [key, label] (label)}
 						<div class="flex w-full items-center gap-2">
 							<kbd class="kbd">{key}</kbd>
 							<div>

@@ -1,14 +1,13 @@
 <script lang="ts">
 	import {
 		BoxGeometry,
-		Color,
 		DirectionalLight,
 		Fog,
 		Mesh,
 		MeshStandardMaterial,
 	} from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { AutoColliders, RigidBody, World } from '@threlte/rapier'
+	import { AutoColliders, RigidBody } from '@threlte/rapier'
 
 	import Breakable from '$lib/components/Breakable.svelte'
 	import Lightformer from '$lib/components/Lightformer.svelte'
@@ -62,26 +61,24 @@
 	castShadow
 />
 
-<World gravity={[0, -1, 0]}>
-	{#each breakables as mesh}
-		<Breakable
-			{mesh}
-			minBreakForce={0.1}
-			maxDepth={2}
-		/>
-	{/each}
+{#each breakables as mesh}
+	<Breakable
+		{mesh}
+		minBreakForce={0.1}
+		maxDepth={2}
+	/>
+{/each}
 
-	<RigidBody type="fixed">
-		<AutoColliders shape="cuboid">
-			<T.Mesh
-				position.y={-1}
-				receiveShadow
-			>
-				<T.BoxGeometry args={[20, 0.1, 20]} />
-				<T.MeshStandardMaterial roughness={0.1} />
-			</T.Mesh>
-		</AutoColliders>
-	</RigidBody>
-</World>
+<RigidBody type="fixed">
+	<AutoColliders shape="cuboid">
+		<T.Mesh
+			position.y={-1}
+			receiveShadow
+		>
+			<T.BoxGeometry args={[20, 0.1, 20]} />
+			<T.MeshStandardMaterial roughness={0.1} />
+		</T.Mesh>
+	</AutoColliders>
+</RigidBody>
 
 <Lightformer />

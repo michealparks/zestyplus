@@ -58,62 +58,60 @@
 	<OrbitControls />
 </T.PerspectiveCamera>
 
-<World gravity={[0, -1, 0]}>
-	<Debug />
-	<!-- torso -->
-	<Rope
-		bind:positions={torsoPositions}
-		bind:lastRigidBody={torsoRigidBody}
-		ballRadius={0.1}
-		ropeStart={[0, 0, 0]}
-		{ropeEnd}
-		length={torsoLength}
-		segments={torsoSegments}
-		{damping}
-	/>
-	<Skin
-		radius={0.3}
-		segments={torsoSegments}
-		heightSegments={torsoSegments * 10}
-		segmentHeight={torsoLength / torsoSegments}
-		positions={torsoPositions}
-	/>
+<Debug />
+<!-- torso -->
+<Rope
+	bind:positions={torsoPositions}
+	bind:lastRigidBody={torsoRigidBody}
+	ballRadius={0.1}
+	ropeStart={[0, 0, 0]}
+	{ropeEnd}
+	length={torsoLength}
+	segments={torsoSegments}
+	{damping}
+/>
+<Skin
+	radius={0.3}
+	segments={torsoSegments}
+	heightSegments={torsoSegments * 10}
+	segmentHeight={torsoLength / torsoSegments}
+	positions={torsoPositions}
+/>
 
-	<Rope
-		bind:positions={leftArmPositions}
-		bind:startRigidBody={startLeftArmRigidbody}
-		bind:lastRigidBody={endLeftArmRigidbody}
-		ballRadius={0.1}
-		ropeStart={[0, 0, 0]}
-		{ropeEnd}
-		length={3}
-		segments={8}
-		{damping}
-	/>
-	<Skin
-		radius={0.3}
-		segments={8}
-		heightSegments={8 * 10}
-		segmentHeight={torsoLength / torsoSegments}
-		positions={leftArmPositions}
-	/>
+<Rope
+	bind:positions={leftArmPositions}
+	bind:startRigidBody={startLeftArmRigidbody}
+	bind:lastRigidBody={endLeftArmRigidbody}
+	ballRadius={0.1}
+	ropeStart={[0, 0, 0]}
+	{ropeEnd}
+	length={3}
+	segments={8}
+	{damping}
+/>
+<Skin
+	radius={0.3}
+	segments={8}
+	heightSegments={8 * 10}
+	segmentHeight={torsoLength / torsoSegments}
+	positions={leftArmPositions}
+/>
 
-	<Rope
-		bind:startRigidBody={startRightArmRigidbody}
-		bind:lastRigidBody={endRightArmRigidbody}
-		ballRadius={0.1}
-		ropeStart={[0, 0, 0]}
-		{ropeEnd}
-		length={3}
-		segments={8}
-		{damping}
-	/>
+<Rope
+	bind:startRigidBody={startRightArmRigidbody}
+	bind:lastRigidBody={endRightArmRigidbody}
+	ballRadius={0.1}
+	ropeStart={[0, 0, 0]}
+	{ropeEnd}
+	length={3}
+	segments={8}
+	{damping}
+/>
 
-	<T.Group position={[0, -2, 0]}>
-		<Collider
-			type="static"
-			shape="cuboid"
-			args={[10, 2, 10]}
-		></Collider>
-	</T.Group>
-</World>
+<T.Group position={[0, -2, 0]}>
+	<Collider
+		type="static"
+		shape="cuboid"
+		args={[10, 2, 10]}
+	></Collider>
+</T.Group>

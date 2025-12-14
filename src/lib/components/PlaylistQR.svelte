@@ -8,8 +8,7 @@
 
 	const { track } = useTrack()
 
-	let div: HTMLElement | undefined = $state()
-
+	let div = $state<HTMLElement>()
 	let url = $derived(track.current?.context?.external_urls?.spotify)
 
 	$effect(() => {
