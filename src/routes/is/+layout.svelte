@@ -15,14 +15,13 @@
 	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 	import PageSelector from '$lib/components/PageSelector.svelte'
 	import { provideAnalyser } from '$lib/analyser.svelte'
-	import { provideWikipedia } from '$lib/hooks/wikipedia.svelte'
+	import Wikipedia from '$lib/components/Wikipedia.svelte'
 
 	let { children } = $props()
 
 	extend(THREE)
 
 	provideAnalyser()
-	const wikipedia = provideWikipedia()
 
 	let costcoMode = new PersistedState('costco-mode', false)
 
@@ -34,34 +33,10 @@
 	useSchedulePageCycle()
 
 	let renderMode = $state<'manual' | 'always'>('manual')
-
-	let text = $state()
-
-	const setEvent = () => {
-		const r = (Math.random() * wikipedia.current.length) | 0
-		const item = wikipedia.current[r]
-
-		if (item) {
-			text = `${item.date}: ${item.description}`
-		}
-	}
-
-	$effect(() => {
-		setEvent()
-		const id = setInterval(() => {
-			setEvent()
-		}, 10_000)
-
-		return () => clearInterval(id)
-	})
 </script>
 
 <div class="absolute top-0 left-0 h-dvh w-dvw">
-	<p
-		class="absolute right-0 bottom-0 z-10 w-3/4 p-4 text-right text-xs text-white"
-	>
-		{text}
-	</p>
+	<Wikipedia />
 
 	<Canvas
 		{renderMode}
