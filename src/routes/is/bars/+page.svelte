@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { Color, InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { Outlines } from '@threlte/extras'
 	import { useAnalyser, hueShift } from '$lib'
 
 	const { size } = useThrelte()
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
-	const count = 72
+	const count = 128
 	const gap = 1
 	const offset = (count * gap) / 2
 
@@ -31,39 +30,43 @@
 	}
 
 	useTask(() => {
+		console.log(count, analyser.spectrum01.length)
 		for (let i = 0, l = count; i < l; i += 1) {
-			const barHeight = frequencyData.current[i]
+			const barHeight = analyser.spectrum01[i]
 
 			if (barHeight) {
 				mesh.getMatrixAt(i, matrix)
 				matrix.decompose(position, quaternion, scale)
-				position.y = barHeight / 75
+				position.y = barHeight * 20
 				scale.set(1, position.y * 4 + 1, 1)
 				matrix.compose(position, quaternion, scale)
 				mesh.setMatrixAt(i, matrix)
 			}
 		}
+
 		mesh.instanceMatrix.needsUpdate = true
 	})
 </script>
 
 <T.OrthographicCamera
 	makeDefault
-	position={[-28, 60, 65]}
-	zoom={$size.width / 50}
+	position={[-20, 20, 20]}
+	zoom={$size.width / 300}
 	oncreate={(ref) => ref.lookAt(0, 0, 0)}
+	near={-200}
+	far={200}
 />
 
 <T.AmbientLight intensity={0.5} />
 
 <T.DirectionalLight
 	castShadow
-	shadow.camera.left={-15}
-	shadow.camera.right={15}
-	shadow.camera.top={15}
-	shadow.camera.bottom={-15}
-	shadow.mapSize.width={2048}
-	shadow.mapSize.height={2048}
+	shadow.camera.left={-30}
+	shadow.camera.right={30}
+	shadow.camera.top={30}
+	shadow.camera.bottom={-30}
+	shadow.mapSize.width={4096}
+	shadow.mapSize.height={4096}
 	intensity={3}
 	position={[10, 10, 10]}
 />
@@ -73,7 +76,7 @@
 	position.y={-0.02}
 	receiveShadow
 >
-	<T.PlaneGeometry args={[100, 100]} />
+	<T.PlaneGeometry args={[500, 500]} />
 	<T.MeshStandardMaterial color="black" />
 </T.Mesh>
 
@@ -84,5 +87,4 @@
 >
 	<T.BoxGeometry args={[0.5, 0.5, 0.5]} />
 	<T.MeshStandardMaterial />
-	<Outlines color="black" />
 </T>

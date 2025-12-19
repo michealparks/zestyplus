@@ -8,7 +8,7 @@
 
 {#if !idle.current}
 	<div
-		class="absolute bottom-2 right-2"
+		class="absolute top-2 right-4"
 		transition:fade
 	>
 		<button

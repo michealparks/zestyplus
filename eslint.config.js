@@ -1,16 +1,21 @@
-import prettier from 'eslint-config-prettier'
-import js from '@eslint/js'
-import { includeIgnoreFile } from '@eslint/compat'
-import svelte from 'eslint-plugin-svelte'
-import globals from 'globals'
 import { fileURLToPath } from 'node:url'
-import ts from 'typescript-eslint'
+import eslint from '@eslint/js'
+import { defineConfig } from 'eslint/config'
+import prettier from 'eslint-config-prettier'
+import { includeIgnoreFile } from '@eslint/compat'
+import globals from 'globals'
+import svelte from 'eslint-plugin-svelte'
+import tseslint from 'typescript-eslint'
+import svelteConfig from './svelte.config.js'
+
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url))
 
-export default ts.config(
+export default defineConfig(
 	includeIgnoreFile(gitignorePath),
-	js.configs.recommended,
-	...ts.configs.recommended,
+	eslint.configs.recommended,
+	tseslint.configs.recommended,
+	tseslint.configs.strict,
+	tseslint.configs.stylistic,
 	...svelte.configs['flat/recommended'],
 	prettier,
 	...svelte.configs['flat/prettier'],
@@ -23,11 +28,14 @@ export default ts.config(
 		},
 	},
 	{
-		files: ['**/*.svelte'],
+		files: ['**/*.svelte', '**/*.svelte.ts'],
 
 		languageOptions: {
 			parserOptions: {
-				parser: ts.parser,
+				projectService: true,
+				extraFileExtensions: ['.svelte'],
+				parser: tseslint.parser,
+				svelteConfig,
 			},
 		},
 	}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { DoubleSide, type ColorRepresentation } from 'three'
-	import { T } from '@threlte/core'
+	import { T, observe } from '@threlte/core'
 	import { VirtualEnvironment, TransformControls } from '@threlte/extras'
 
 	interface Props {
@@ -17,15 +17,12 @@
 		debug = false,
 	}: Props = $props()
 
-	let virtualEnvironment = $state()
+	let virtualEnvironment = $state.raw<VirtualEnvironment>()
 
-	$effect(() => {
-		color1
-		color2
-		color3
-		// @ts-expect-error
-		virtualEnvironment?.update()
-	})
+	observe(
+		() => [color1, color2, color3],
+		() => virtualEnvironment?.update()
+	)
 </script>
 
 {#snippet lightformer(

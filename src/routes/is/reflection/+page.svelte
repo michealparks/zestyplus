@@ -9,7 +9,7 @@
 	import { fragmentShader, vertexShader } from './shader'
 
 	const { scene } = useThrelte()
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
 	const spot1 = new SpotLight()
 
@@ -29,12 +29,12 @@
 	useTask((delta) => {
 		mesh1.rotation.y += delta
 
-		const v = lerp(torusMaterial.opacity, frequencyData.current[64] / 50, delta)
+		const v = lerp(torusMaterial.opacity, analyser.logSmooth01[64] / 50, delta)
 		torusMaterial.opacity = Math.max(0.1, v)
 
-		uniforms.time.value += delta / 3 + frequencyData.current[32] / 500
+		uniforms.time.value += delta / 3 + analyser.logSmooth01[32] / 500
 
-		const n = normalizeToUnitInterval(frequencyData.current[16], 0, 100)
+		const n = normalizeToUnitInterval(analyser.logSmooth01[16], 0, 100)
 		spot1.intensity = lerp(n * 10, 0, delta / 2)
 	})
 </script>

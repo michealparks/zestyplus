@@ -5,14 +5,14 @@
 
 	import Ribbon from './Ribbon.svelte'
 
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
 	interface Trigger {
 		on: boolean
 		dashOffset: number
 	}
 
-	const count = 10
+	const count = 50
 
 	const triggers: Trigger[] = $state(
 		Array.from({ length: count }).map(() => ({
@@ -29,7 +29,7 @@
 
 	useTask((delta) => {
 		for (let i = 0, j = 10; i < triggers.length; i += 1, j += 15) {
-			if (triggers[i].on === false && frequencyData.current[j] > 120) {
+			if (triggers[i].on === false && analyser.level > 0.4) {
 				triggers[i].on = true
 				triggers[i].dashOffset = -0.1
 			}
@@ -54,7 +54,7 @@
 	/>
 </T.PerspectiveCamera>
 
-{#each ribbons as ribbon, index}
+{#each ribbons as ribbon, index (ribbon)}
 	<Ribbon
 		position.x={ribbon.x}
 		baseWidth={ribbon.baseWidth}

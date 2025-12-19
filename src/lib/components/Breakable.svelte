@@ -9,7 +9,7 @@
 		AutoColliders,
 		RigidBody,
 	} from '@threlte/rapier'
-	import { Quaternion, Vector3, type Object3D } from 'three'
+	import { Quaternion, Vector3, type Object3D, type Vector3Tuple } from 'three'
 	import { ConvexObjectBreaker } from 'three/addons'
 	import Self from './Breakable.svelte'
 
@@ -17,8 +17,13 @@
 </script>
 
 <script lang="ts">
-	type Props = {
+	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
+
+	interface Props {
+		velocity?: Vector3Tuple
+		angularVelocity?: Vector3Tuple
 		fixed?: boolean
+		autoBreak?: boolean
 		depth?: number
 		maxDepth?: number
 		minBreakForce?: number
@@ -27,26 +32,29 @@
 
 	let {
 		fixed = false,
+		velocity,
+		angularVelocity,
 		depth = 0,
 		maxDepth = 1,
 		minBreakForce = 100,
-		/**
-		 * Expects mesh.geometry to be a ConvexGeometry
-		 */
-		/** internal prop for recursive rendering */
-
 		mesh,
 		...rest
 	}: Props = $props()
 
 	let debris: Object3D[] = $state([])
 
+	// last recorded velocities at the moment the piece breaks
+	let breakVelocity: Vector3Tuple | undefined = velocity
+	let breakAngularVelocity: Vector3Tuple | undefined = angularVelocity
+
+	// handle to the current Rapier rigid body
+	let rigidBody: RapierRigidBody | undefined
+
 	if (depth === 0) {
-		// no need to prepare if we're already "broken"!
+		// same as before: only prepare the root piece
 		breaker.prepareBreakableObject(mesh, 1, new Vector3(), new Vector3(), true)
 	}
 
-	/** used as signal if collision happened */
 	let impactV: Vector3 | undefined
 	let impactN: Vector3 | undefined
 
@@ -59,18 +67,17 @@
 		const contactPoint = event.manifold.localContactPoint1(0)
 		if (!contactPoint) return
 
+		// this is in the collider's local space, which matches what the breaker expects
 		impactV = new Vector3(contactPoint.x, contactPoint.y, contactPoint.z)
 	}
 
 	const pos = new Vector3()
 	const quat = new Quaternion()
-	const vec3 = new Vector3()
 
 	const oncontact: ContactEvent = (event) => {
 		if (!impactV) return
 
 		if (event.totalForceMagnitude < minBreakForce) {
-			// if the force is too small, we don't break, but reset the impactV
 			impactV = undefined
 			return
 		}
@@ -78,21 +85,40 @@
 		const normal = event.maxForceDirection
 		impactN = new Vector3(normal.x, normal.y, normal.z)
 
+		// snapshot current RB velocities once, right before we break
+		if (rigidBody) {
+			const lv = rigidBody.linvel()
+			const av = rigidBody.angvel()
+			breakVelocity = [lv.x, lv.y, lv.z]
+			breakAngularVelocity = [av.x, av.y, av.z]
+		}
+
+		// *** this part is unchanged in spirit from your original ***
 		debris = breaker.subdivideByImpact(mesh, impactV, impactN, 2, 1)
 
-		const parent = mesh.parent!
-		parent.getWorldPosition(pos)
-		parent.getWorldQuaternion(quat)
-		// const parentPos = mesh.parent?.parent?.position
-		// const parentRot = mesh.parent?.parent?.quaternion
+		// use the parent transform (RB object) as before, but fix rotation math
+		const parent = mesh.parent
+		if (parent) {
+			parent.getWorldPosition(pos)
+			parent.getWorldQuaternion(quat)
 
-		// if (!parentPos) return
+			for (const item of debris) {
+				// rotate shard offset into world space
+				item.position.applyQuaternion(quat)
+				item.position.add(pos)
 
-		for (const item of debris) {
-			item.quaternion.copy(quat)
-			item.position.add(pos)
-			item.castShadow = item.receiveShadow = true
+				// compose rotations: worldRot = parentRot * localRot
+				item.quaternion.premultiply(quat)
+
+				item.castShadow = item.receiveShadow = true
+
+				item.material = mesh.material.clone()
+			}
 		}
+
+		// clear impact so we don't double-break on lingering contacts
+		impactV = undefined
+		impactN = undefined
 	}
 </script>
 
@@ -101,11 +127,31 @@
 		type={fixed ? 'fixed' : 'dynamic'}
 		{oncollisionenter}
 		{oncontact}
+		oncreate={(ref) => {
+			rigidBody = ref
+
+			// keep your original "spawn velocity" behaviour
+			if (velocity) {
+				ref.setLinvel({ x: velocity[0], y: velocity[1], z: velocity[2] }, true)
+			}
+			if (angularVelocity) {
+				ref.setAngvel(
+					{
+						x: angularVelocity[0],
+						y: angularVelocity[1],
+						z: angularVelocity[2],
+					},
+					true
+				)
+			}
+		}}
 		canSleep={false}
-		{...rest}
 	>
 		<AutoColliders shape="convexHull">
-			<T is={mesh} />
+			<T
+				is={mesh}
+				{...rest}
+			/>
 		</AutoColliders>
 	</RigidBody>
 {:else}
@@ -116,6 +162,9 @@
 				depth={depth + 1}
 				{maxDepth}
 				{minBreakForce}
+				velocity={breakVelocity}
+				angularVelocity={breakAngularVelocity}
+				{...rest}
 			/>
 		</T.Group>
 	{/each}

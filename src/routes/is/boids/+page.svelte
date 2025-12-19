@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { T, useTask } from '@threlte/core'
-
+	import { T, useTask, useThrelte } from '@threlte/core'
 	import {
 		BoidsController,
 		ControlHelper,
@@ -13,11 +12,17 @@
 		Vector3,
 		Quaternion,
 		Color,
-	} from 'three'
+		PostProcessing,
+		WebGPURenderer,
+		MeshStandardNodeMaterial,
+	} from 'three/webgpu'
+	import { pass, mrt, output, emissive, uniform } from 'three/tsl'
+	import { bloom } from 'three/addons/tsl/display/BloomNode.js'
+
 	import { OrbitControls } from '@threlte/extras'
 	import { hueShift, useAnalyser } from '$lib'
 
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
 	let iterateRequested = false
 
@@ -103,6 +108,9 @@
 
 	let ballIndex = 0
 
+	const sphereMaterial = new MeshStandardNodeMaterial()
+	const boidsMaterial = new MeshStandardNodeMaterial()
+
 	useTask(() => {
 		const entities = boidsController.getFlockEntities()
 
@@ -134,12 +142,17 @@
 		boidMesh.instanceMatrix.needsUpdate = true
 
 		const obstacles = boidsController.getObstacleEntities()
-		for (let i = 0, l = obstacles.length; i < l; i += 1) {
-			// obstacleMesh.setColorAt(i, hueShift(color, frequencyData.current[i]))
+
+		if (analyser.onsetStrength > 0) {
+			color.setHSL(Math.random(), 0.8, 0.5)
+			obstacleMesh.setColorAt(ballIndex, color)
+			ballIndex += 1
+			ballIndex %= obstacles.length
+
+			if (obstacleMesh.instanceColor) {
+				obstacleMesh.instanceColor.needsUpdate = true
+			}
 		}
-		// if (obstacleMesh.instanceColor) {
-		// 	obstacleMesh.instanceColor.needsUpdate = true
-		// }
 	})
 
 	$effect(() => {
@@ -157,6 +170,46 @@
 		if (obstacleMesh.instanceColor) {
 			obstacleMesh.instanceColor.needsUpdate = true
 		}
+	})
+
+	const { scene, camera, renderer, renderMode } = useThrelte<WebGPURenderer>()
+
+	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		renderMode.set('manual')
+		return () => renderMode.set('always')
+	})
+
+	$effect(() => {
+		const scenePass = pass(scene, $camera)
+		scenePass.setMRT(
+			mrt({
+				output,
+				emissive,
+			})
+		)
+		const bloomIntensity = Math.random() > 0.5 ? 1 : 0
+
+		sphereMaterial.mrtNode = mrt({
+			bloomIntensity: uniform(bloomIntensity),
+		})
+
+		boidsMaterial.mrtNode = mrt({
+			bloomIntensity: uniform(0),
+		})
+
+		const outputPass = scenePass.getTextureNode().toInspector('Color')
+		const bloomIntensityPass = scenePass
+			.getTextureNode('bloomIntensity')
+			.toInspector('Bloom Intensity')
+		const bloomPass = bloom(outputPass.mul(bloomIntensityPass))
+
+		postProcessing.outputNode = outputPass.add(bloomPass)
+	})
+
+	useTask(() => {
+		postProcessing.render()
 	})
 </script>
 
@@ -188,7 +241,7 @@
 			ref.rotateX(Math.PI / 2)
 		}}
 	/>
-	<T.MeshNormalMaterial />
+	<T is={boidsMaterial} />
 </T>
 
 <T.DirectionalLight
@@ -203,8 +256,10 @@
 	position={[-boundary[0] / 2, -boundary[1] / 2, -boundary[2] / 2]}
 >
 	<T.SphereGeometry args={[20]} />
-	<!-- <T.MeshBasicMaterial /> -->
-	<T.MeshStandardMaterial roughness={0.1} />
+	<T
+		is={sphereMaterial}
+		roughness={0.1}
+	/>
 </T>
 
 <!-- <T.LineSegments args={[]}>

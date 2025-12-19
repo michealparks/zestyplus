@@ -4,10 +4,13 @@
 	import { useGltf, OrbitControls } from '@threlte/extras'
 	import { Collider, RigidBody } from '@threlte/rapier'
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
+	import { useAnalyser } from '$lib'
 
 	const count = 15
 
-	let nodes: Mesh[] = $state([])
+	const analyser = useAnalyser()
+
+	let nodes = $state<Mesh[]>([])
 	let timeoutIds = new Set<number>()
 
 	useGltf('/hotdog.glb').then((dog) => {
@@ -66,7 +69,7 @@
 			}}
 		>
 			<Collider
-				shape={'cuboid'}
+				shape="cuboid"
 				args={[0.5, 0.5, 0.5]}
 			/>
 			<T.Group scale={0.0015}>

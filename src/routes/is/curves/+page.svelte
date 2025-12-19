@@ -1,9 +1,15 @@
 <script lang="ts">
-	import { Vector3, MathUtils, Color, CatmullRomCurve3 } from 'three'
-	import { Line2, LineMaterial, LineGeometry } from 'three/addons'
+	import {
+		Vector3,
+		MathUtils,
+		Color,
+		CatmullRomCurve3,
+		Line2NodeMaterial,
+	} from 'three/webgpu'
+	import { Line2 } from 'three/addons/lines/webgpu/Line2.js'
+	import { LineGeometry } from 'three/addons/lines/LineGeometry.js'
 
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { OrbitControls } from '@threlte/extras'
 	import { hueShift, useAnalyser } from '$lib'
 
 	const { camera } = useThrelte()
@@ -32,7 +38,7 @@
 	// Generate points
 	const numPoints = 2000 // Total points for smoothness
 
-	const color = new Color('red').setHSL(Math.random(), 0.5, 0.5)
+	let color = $state.raw(new Color('red').setHSL(Math.random(), 0.8, 0.5))
 
 	for (let i = 0; i < iterations; i += 1) {
 		const shift = new Vector3(
@@ -59,7 +65,6 @@
 
 	// Animation Variables
 	let progress = 0 // Tracks progress along the curve
-	let dt = 0.005
 
 	const animateCamera = () => {
 		const curve = new CatmullRomCurve3(lines.at(0)?.points) // Create a smooth path
@@ -77,17 +82,25 @@
 	}
 
 	useTask(() => {
+		let count = 0
+
 		for (let i = 0, l = lines.length; i < l; i += 1) {
 			const { line, opacity, animating } = lines[i]
 
 			if (animating && opacity > 0) {
 				lines[i].opacity -= 0.005
-			} else if (analyser.frequencyData.current[i] > 100) {
+			} else if (analyser.spectrum01[i % 128] > 0.2) {
 				lines[i].opacity = 0.4
 				lines[i].animating = true
+				count += 1
 			}
 
 			line.material.opacity = lines[i].opacity
+		}
+
+		if (count >= 10) {
+			console.log('here')
+			color = color.setHSL(Math.random(), 0.8, 0.5)
 		}
 
 		animateCamera()
@@ -113,7 +126,7 @@
 	position={[10, 10, 10]}
 />
 
-{#each lines as { line, shift, points }}
+{#each lines as { line, shift, points } (line.uuid)}
 	<T
 		is={line}
 		oncreate={(ref) => {
@@ -123,9 +136,9 @@
 	>
 		<T is={LineGeometry} />
 		<T
-			is={LineMaterial}
+			is={Line2NodeMaterial}
 			transparent
-			color={hueShift(color, 0.0025)}
+			color={hueShift(color, 0.01)}
 		/>
 	</T>
 {/each}

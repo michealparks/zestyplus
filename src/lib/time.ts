@@ -9,7 +9,7 @@ export const onTargetTime = (
 		const id = setTimeout(callback, delay)
 		return () => clearTimeout(id)
 	} else {
-		console.error('Target time is in the past. Check system clock.')
+		callback()
 		return () => {}
 	}
 }

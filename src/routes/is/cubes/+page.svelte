@@ -27,7 +27,7 @@
 	const scale = new Vector3(1, 1, 1)
 	const matrix = new Matrix4()
 
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
 	let j = numCubes - 1
 
@@ -46,9 +46,11 @@
 			mesh.setMatrixAt(index, matrix)
 			mesh.setColorAt(index, hueShift(color, 0))
 		}
+
 		if (mesh.instanceColor) {
 			mesh.instanceColor.needsUpdate = true
 		}
+
 		mesh.instanceMatrix.needsUpdate = true
 	})
 
@@ -71,7 +73,7 @@
 			mesh.getMatrixAt(index, matrix)
 			matrix.decompose(position, quaternion, scale)
 
-			const ftt = frequencyData.current[index % 32]
+			const ftt = analyser.logSmooth01[index % 128]
 			scale.setScalar(Math.max(ftt / 100, 0.5))
 
 			mesh.setColorAt(index, hueShift(color.set(hex), ftt / 1000))

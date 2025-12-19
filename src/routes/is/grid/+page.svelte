@@ -1,13 +1,40 @@
 <script lang="ts">
-	import { Color, InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three'
+	import {
+		Color,
+		InstancedMesh,
+		Matrix4,
+		Quaternion,
+		Vector3,
+		PostProcessing,
+		MeshToonNodeMaterial,
+	} from 'three/webgpu'
+	import { toonOutlinePass } from 'three/tsl'
+
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { Outlines } from '@threlte/extras'
 	import { useAnalyser, hueShift } from '$lib'
+	import { WebGPURenderer } from 'three/src/Three.WebGPU.Nodes.js'
+	import Reflection from '$lib/components/Reflection.svelte'
+
+	const { renderer, scene, camera, renderMode } = useThrelte<WebGPURenderer>()
+	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		postProcessing.outputNode = toonOutlinePass(scene, $camera)
+	})
+
+	$effect(() => {
+		renderMode.set('manual')
+		return () => renderMode.set('always')
+	})
+
+	useTask(() => {
+		postProcessing.render()
+	})
 
 	const { size } = useThrelte()
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
-	const count = 16
+	const count = 20
 	const gap = 1
 	const offset = (count * gap) / 2
 
@@ -35,13 +62,13 @@
 	}
 
 	useTask(() => {
-		for (let i = 0, l = frequencyData.current.length / 2; i < l; i += 1) {
-			const barHeight = frequencyData.current[i]
+		for (let i = 0, l = analyser.log01.length; i < l; i += 1) {
+			const barHeight = analyser.log01[i]
 
 			if (barHeight) {
 				mesh.getMatrixAt(i, matrix)
 				matrix.decompose(position, quaternion, scale)
-				position.y = barHeight / 75
+				position.y = barHeight * 10
 				scale.set(1, position.y * 4 + 1, 1)
 				matrix.compose(position, quaternion, scale)
 				mesh.setMatrixAt(i, matrix)
@@ -51,10 +78,10 @@
 	})
 </script>
 
-<T.OrthographicCamera
+<T.PerspectiveCamera
 	makeDefault
 	position={[-28, 60, 65]}
-	zoom={$size.width / 40}
+	zoom={$size.width / 400}
 	oncreate={(ref) => ref.lookAt(0, 0, 0)}
 />
 
@@ -72,21 +99,13 @@
 	position={[10, 10, 10]}
 />
 
-<T.Mesh
-	rotation.x={-Math.PI / 2}
-	position.y={-0.02}
-	receiveShadow
->
-	<T.PlaneGeometry args={[100, 100]} />
-	<T.MeshStandardMaterial color="black" />
-</T.Mesh>
-
 <T
 	is={mesh}
 	castShadow
 	receiveShadow
 >
 	<T.BoxGeometry args={[0.5, 0.5, 0.5]} />
-	<T.MeshStandardMaterial />
-	<Outlines color="black" />
+	<T is={MeshToonNodeMaterial} />
 </T>
+
+<Reflection />

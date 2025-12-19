@@ -5,7 +5,7 @@
 	import Rope from './Rope.svelte'
 	import { OrbitControls } from '@threlte/extras'
 	import Skin from './Skin.svelte'
-	import { Collider, Debug, World } from '@threlte/rapier'
+	import { Collider, Debug } from '@threlte/rapier'
 
 	let torsoSegments = 20
 	let torsoLength = 5

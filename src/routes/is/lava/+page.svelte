@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Vector2, Color, Fog } from 'three'
+	import { Vector2, Fog } from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { Grid, OrbitControls } from '@threlte/extras'
+	import { OrbitControls } from '@threlte/extras'
 	import MarchingCubes from './MarchingCubes.svelte'
 	import { MarchingCube } from './MarchingCube'
 	import { MarchingPlane } from './MarchingPlane'
@@ -9,7 +9,7 @@
 	import Lightformer from '$lib/components/Lightformer.svelte'
 
 	const { scene } = useThrelte()
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 
 	$effect(() => {
 		scene.fog = new Fog('black')
@@ -21,7 +21,6 @@
 	const count = 30
 	const scale = 0.2
 	const balls: { marchingCube: MarchingCube }[] = []
-	const m = (2 * Math.PI) / count
 
 	const vec2 = new Vector2()
 
@@ -37,14 +36,11 @@
 		balls.push({ marchingCube })
 	}
 
-	let time = 0
 	useTask((delta) => {
-		time += delta
 		for (let i = 0; i < count; i += 1) {
 			const { marchingCube } = balls[i]
-			const fft = frequencyData.current[i]
 
-			if (fft > 150 && marchingCube.animating === '') {
+			if (analyser.level > 0.3 && marchingCube.animating === '') {
 				marchingCube.animating = 'up'
 				marchingCube.userData.x = -Math.PI / 2
 			}
@@ -81,15 +77,15 @@
 <T.AmbientLight />
 <T.DirectionalLight intensity={3} />
 
-<MarchingCubes>
+<!-- <MarchingCubes>
 	<T.MeshStandardMaterial
 		vertexColors
 		roughness={0.01}
 	/>
-	{#each balls as { marchingCube }}
+	{#each balls as { marchingCube } (marchingCube.uuid)}
 		<T is={marchingCube} />
 	{/each}
 	<T is={plane} />
-</MarchingCubes>
+</MarchingCubes> -->
 
 <Lightformer />

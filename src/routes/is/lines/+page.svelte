@@ -1,15 +1,40 @@
 <script lang="ts">
+	import {
+		Line2NodeMaterial,
+		Color,
+		MathUtils,
+		Mesh,
+		Vector3,
+		PostProcessing,
+		type WebGPURenderer,
+	} from 'three/webgpu'
+	import { toonOutlinePass } from 'three/tsl'
+	import { Line2 } from 'three/addons/lines/webgpu/Line2.js'
+	import { LineGeometry } from 'three/addons/lines/LineGeometry.js'
 	import { T, useTask, useThrelte } from '@threlte/core'
-	import { Grid, OrbitControls } from '@threlte/extras'
-	import { Line2, LineMaterial, LineGeometry } from 'three/addons'
 	import { shiftAndAddVector } from '../../../lib/array'
 	import { hueShift } from '$lib/color'
 	import { useAnalyser } from '$lib'
-	import { Color, Mesh, Vector3 } from 'three'
 	import { fade } from '$lib/transitions'
+	import Reflection from '$lib/components/Reflection.svelte'
 
-	const { frequencyData, analyserReady } = useAnalyser()
-	const { camera } = useThrelte()
+	const analyser = useAnalyser()
+	const { camera, scene, renderer, renderMode } = useThrelte<WebGPURenderer>()
+
+	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		postProcessing.outputNode = toonOutlinePass(scene, $camera)
+	})
+
+	$effect(() => {
+		renderMode.set('manual')
+		return () => renderMode.set('always')
+	})
+
+	useTask(() => {
+		postProcessing.render()
+	})
 
 	let numLines = 60
 	let lineLength = 350
@@ -18,15 +43,16 @@
 	const color = new Color('red')
 
 	const lines: {
-		id: string
+		line: Line2
 		geometry: LineGeometry
-		material: LineMaterial
+		material: Line2NodeMaterial
 		positions: Float32Array
 	}[] = []
 
 	for (let i = 0; i < numLines; i += 1) {
+		const line = new Line2()
 		const geometry = new LineGeometry()
-		const material = new LineMaterial()
+		const material = new Line2NodeMaterial()
 
 		const dir = i % 2 === 0 ? 1 : -1
 		const positions = new Float32Array(lineLength * 3)
@@ -38,7 +64,7 @@
 		geometry.setPositions(positions)
 
 		lines.push({
-			id: crypto.randomUUID(),
+			line,
 			geometry,
 			material,
 			positions,
@@ -54,29 +80,22 @@
 		}
 	})
 
-	const { start } = useTask(
-		() => {
-			const { z } = camera.current.position
+	useTask(() => {
+		const { z } = camera.current.position
 
-			for (let i = 0, l = lines.length; i < l; i += 1) {
-				const line = lines[i]
-				const dir = i % 2 === 0 ? 1 : -1
-				const fft = frequencyData.current[i]
+		for (let i = 10, l = lines.length; i < l; i += 1) {
+			const line = lines[i]
+			const dir = i % 2 === 0 ? 1 : -1
 
-				if (fft === undefined) continue
+			const x = analyser.log01[i * 7] * 20 * dir
 
-				const x = (fft / 20) * dir
-
-				shiftAndAddVector(line.positions, x, i / 5, z - 10)
-				line.geometry.setPositions(line.positions)
-			}
-		},
-		{ autoStart: false }
-	)
-
-	$effect(() => {
-		if (analyserReady.current) {
-			setTimeout(() => start(), 500)
+			shiftAndAddVector(line.positions, x, i / 5, z - 10)
+			line.geometry.setPositions(line.positions)
+			line.material.opacity = MathUtils.lerp(
+				line.material.opacity,
+				Math.abs(x / 20),
+				0.1
+			)
 		}
 	})
 
@@ -87,6 +106,7 @@
 
 	useTask((delta) => {
 		const { z } = camera.current.position
+
 		if (view === 'forward') {
 			camera.current.position.lerp(vec3.set(0, 4, z), delta)
 			target.lerp(vec3.set(0, 4, z - 10), delta)
@@ -94,6 +114,7 @@
 			camera.current.position.lerp(vec3.set(0, 15, z), delta)
 			target.lerp(vec3.set(0, 2, z - 8), delta)
 		}
+
 		camera.current.lookAt(target)
 	})
 
@@ -112,23 +133,16 @@
 	oncreate={(ref) => ref.lookAt(0, 2, 0)}
 ></T.PerspectiveCamera>
 
-<Grid
-	bind:ref={grid}
-	infiniteGrid
-	type="lines"
-	axis="x"
-	cellColor={new Color(0.1, 0.1, 0.1)}
-	sectionColor="white"
-/>
-
-{#each lines as line, index (line.id)}
-	<T is={Line2}>
+{#each lines as { line, material, geometry }, index (line.uuid)}
+	<T is={line}>
 		<T
-			is={line.material}
+			is={material}
 			linewidth={1.5}
 			color={hueShift(color, index / 2000)}
 			transition={fade}
 		/>
-		<T is={line.geometry} />
+		<T is={geometry} />
 	</T>
 {/each}
+
+<Reflection />

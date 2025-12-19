@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		formatDisplayTimeFromNumber,
-		getDateSecondsFromNow,
 		minutesBeforeNewYears,
 		onTargetTime,
 	} from '$lib/time'
@@ -76,12 +75,22 @@
 	}
 
 	$effect(() => {
-		const time = minutesBeforeNewYears(10)
+		// 1. Real target: midnight
+		const year = new Date().getFullYear() + 1
+		const midnight = new Date(year, 0, 1, 0, 0, 0)
+		targetTime = midnight.getTime()
 
-		//const time = getDateSecondsFromNow(5 * 60)
-		targetTime = time.getTime()
+		// 2. When to start the countdown: 10 minutes before
+		const startTime = new Date(midnight.getTime() - 10 * 60_000)
 
-		const cleanup = onTargetTime(time, startCountdown)
+		// If we're already past the start time, just start immediately
+		if (Date.now() >= startTime.getTime()) {
+			startCountdown()
+			return () => null
+		}
+
+		// Otherwise, schedule the start
+		const cleanup = onTargetTime(startTime, startCountdown)
 		return cleanup
 	})
 
@@ -97,13 +106,15 @@
 					displayState = 'idle'
 				}, intervalTime)
 			}, intervalTime)
+
+			return () => clearInterval(celebrateInterval)
 		}
 	})
 </script>
 
 {#if displayState === 'counting'}
 	<div
-		class="z-1 pointer-events-none absolute grid h-full w-full place-content-center text-8xl text-white"
+		class="pointer-events-none absolute z-1 grid h-full w-full place-content-center text-8xl text-white"
 	>
 		<div class="flex gap-2">
 			🫲
@@ -115,10 +126,10 @@
 	</div>
 {:else if displayState === 'celebrating'}
 	<div
-		class="z-1 pointer-events-none absolute h-full w-full place-content-center text-8xl text-white"
+		class="pointer-events-none absolute z-1 h-full w-full place-content-center text-8xl text-white"
 		class:fading
 	>
-		{#each currentEmojis as { emoji, x, y }}
+		{#each currentEmojis as { emoji, x, y } (`${x}:${y}:${emoji}`)}
 			<div
 				class="emoji absolute"
 				style="left: {x}%; top: {y}%"

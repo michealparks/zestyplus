@@ -1,4 +1,4 @@
-import { goto } from '$app/navigation'
+import { goto, onNavigate } from '$app/navigation'
 import { shuffle } from '../array'
 import { modules } from '../../modules'
 
@@ -35,8 +35,22 @@ export const transitionPage = (direction: 1 | -1) => {
 	goto(nextPage)
 }
 
-export const schedulePageCycle = () => {
-	const fiveMinutes = 1000 * 60 * 5
-	const duration = fiveMinutes + (Math.random() - 0.5) * 2
-	return setTimeout(transitionPage, duration, -1)
+export const useSchedulePageCycle = () => {
+	const schedule = () => {
+		const fiveMinutes = 1000 * 60 * 5
+		const duration = fiveMinutes + (Math.random() - 0.5) * 2
+		return setTimeout(transitionPage, duration, -1)
+	}
+
+	let id = -1
+
+	$effect(() => {
+		clearTimeout(id)
+		id = schedule()
+	})
+
+	onNavigate(() => {
+		clearTimeout(id)
+		id = schedule()
+	})
 }

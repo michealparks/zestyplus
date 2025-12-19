@@ -4,6 +4,6 @@
 	let { children } = $props()
 </script>
 
-<Postprocessing />
+<!-- <Postprocessing /> -->
 
 {@render children()}

@@ -15,7 +15,7 @@
 </script>
 
 <script lang="ts">
-	import { MeshBasicMaterial } from 'three'
+	import { MeshBasicMaterial } from 'three/webgpu'
 	import { T, useTask, type Props } from '@threlte/core'
 	import { MarchingCube } from './MarchingCube'
 	import { MarchingCubes } from 'three/examples/jsm/Addons.js'

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { useAnalyser } from '$lib'
 
-	const { frequencyData } = useAnalyser()
+	const analyser = useAnalyser()
 	let canvas: HTMLCanvasElement
 	let ctx: CanvasRenderingContext2D | undefined
 
@@ -19,13 +19,13 @@
 		ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 		// Draw frequency bars
-		const { length } = frequencyData.current
+		const { length } = analyser.spectrum01
 		const barWidth = (canvas.width / length) * 2.5
 		let barHeight
 		let x = 0
 
 		for (let i = 0; i < length; i += 1) {
-			barHeight = frequencyData.current[i] / 5
+			barHeight = analyser.spectrum01[i] / 5
 
 			ctx.fillStyle = 'rgb(255, 50, 50)'
 			ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2)

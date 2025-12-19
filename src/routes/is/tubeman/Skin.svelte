@@ -57,12 +57,12 @@
 		positions,
 	}: Props = $props()
 
-	const height = segmentHeight * segments
-	const halfHeight = height * 0.5
+	const height = $derived(segmentHeight * segments)
+	const halfHeight = $derived(height * 0.5)
 
-	const bones = createBones(halfHeight, segments, segmentHeight)
+	const bones = $derived(createBones(halfHeight, segments, segmentHeight))
 	const mesh = new SkinnedMesh()
-	const skeleton = new Skeleton(bones)
+	const skeleton = $derived(new Skeleton(bones))
 	mesh.add(bones[0])
 	mesh.bind(skeleton)
 
