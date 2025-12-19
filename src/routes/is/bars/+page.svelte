@@ -3,7 +3,9 @@
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { useAnalyser, hueShift } from '$lib'
 
-	const { size } = useThrelte()
+	let debug = false
+
+	const { scene, size } = useThrelte()
 	const analyser = useAnalyser()
 
 	const count = 128
@@ -51,7 +53,7 @@
 <T.OrthographicCamera
 	makeDefault
 	position={[-20, 20, 20]}
-	zoom={$size.width / 300}
+	zoom={$size.width / 175}
 	oncreate={(ref) => ref.lookAt(0, 0, 0)}
 	near={-200}
 	far={200}
@@ -61,15 +63,24 @@
 
 <T.DirectionalLight
 	castShadow
-	shadow.camera.left={-30}
-	shadow.camera.right={30}
-	shadow.camera.top={30}
-	shadow.camera.bottom={-30}
+	shadow.camera.left={-200}
+	shadow.camera.right={200}
+	shadow.camera.top={200}
+	shadow.camera.bottom={-200}
 	shadow.mapSize.width={4096}
 	shadow.mapSize.height={4096}
 	intensity={3}
-	position={[10, 10, 10]}
-/>
+	position={[30, 30, 10]}
+>
+	{#snippet children({ ref })}
+		{#if debug}
+			<T.DirectionalLightHelper
+				args={[ref]}
+				attach={scene}
+			/>
+		{/if}
+	{/snippet}
+</T.DirectionalLight>
 
 <T.Mesh
 	rotation.x={-Math.PI / 2}
