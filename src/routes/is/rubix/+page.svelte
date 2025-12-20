@@ -213,7 +213,7 @@
 
 	//
 
-	const numberCubes = 2000
+	const numberCubes = 20
 	const mesh = new InstancedMesh(
 		new OctahedronGeometry(0.1),
 		new MeshStandardNodeMaterial({
@@ -396,6 +396,6 @@
 <T is={rectLight2}></T>
 <T is={rectLight3}></T>
 
-<T is={volumetricMesh}></T>
+<!-- <T is={volumetricMesh}></T> -->
 
 <!-- <Lightformer /> -->

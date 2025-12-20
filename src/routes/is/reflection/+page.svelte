@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { Mesh, SpotLight, ShaderMaterial, MeshStandardMaterial } from 'three'
+	import { Mesh, SpotLight, MeshStandardMaterial } from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { OrbitControls } from '@threlte/extras'
 	import Lightformer from '$lib/components/Lightformer.svelte'
 	import { useAnalyser } from '$lib'
 	import { lerp } from 'three/src/math/MathUtils.js'
 	import { normalizeToUnitInterval } from '$lib/math'
-	import { fragmentShader, vertexShader } from './shader'
 
 	const { scene } = useThrelte()
 	const analyser = useAnalyser()
@@ -14,25 +13,18 @@
 	const spot1 = new SpotLight()
 
 	const mesh1 = new Mesh()
-
-	const uniforms = {
-		time: { value: 1.0 },
-	}
-	const shaderMaterial = new ShaderMaterial({
-		uniforms,
-		vertexShader,
-		fragmentShader,
-	})
+	const mesh2 = new Mesh()
+	const mesh3 = new Mesh()
 
 	const torusMaterial = new MeshStandardMaterial()
 
+	mesh1.rotation.y += Math.PI / 2
+	mesh2.rotation.y += Math.PI / 4
+
 	useTask((delta) => {
 		mesh1.rotation.y += delta
-
-		const v = lerp(torusMaterial.opacity, analyser.logSmooth01[64] / 50, delta)
-		torusMaterial.opacity = Math.max(0.1, v)
-
-		uniforms.time.value += delta / 3 + analyser.logSmooth01[32] / 500
+		mesh2.rotation.y += delta
+		mesh3.rotation.y += delta
 
 		const n = normalizeToUnitInterval(analyser.logSmooth01[16], 0, 100)
 		spot1.intensity = lerp(n * 10, 0, delta / 2)
@@ -73,9 +65,36 @@
 	<T.TorusKnotGeometry args={[1, 0.4, 256, 64]} />
 </T>
 
-<T.Mesh position.z={-1}>
-	<T is={shaderMaterial} />
-	<T.PlaneGeometry args={[12, 3]} />
-</T.Mesh>
+<Lightformer />
+
+<T
+	is={mesh2}
+	position={[-5, 0, -5]}
+	castShadow
+	receiveShadow
+>
+	<T
+		is={torusMaterial}
+		roughness={0.1}
+		metalness={1}
+		transparent
+	/>
+	<T.TorusKnotGeometry args={[1, 0.4, 256, 64]} />
+</T>
+
+<T
+	is={mesh3}
+	position={[5, 0, -5]}
+	castShadow
+	receiveShadow
+>
+	<T
+		is={torusMaterial}
+		roughness={0.1}
+		metalness={1}
+		transparent
+	/>
+	<T.TorusKnotGeometry args={[1, 0.4, 256, 64]} />
+</T>
 
 <Lightformer />

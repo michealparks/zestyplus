@@ -1,8 +1,7 @@
 import { goto, onNavigate } from '$app/navigation'
 import { shuffle } from '../array'
 import { modules } from '../../modules'
-
-export const omit: string[] = ['tubeman']
+import omit from '../excludePages'
 
 export const pages = [
 	...new Set(

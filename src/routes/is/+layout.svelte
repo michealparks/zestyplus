@@ -10,7 +10,7 @@
 	import Settings from '$lib/components/Settings.svelte'
 	import TrackInfo from '$lib/components/TrackInfo.svelte'
 	import Countdown from '$lib/components/Countdown.svelte'
-	import PlaylistQr from '$lib/components/PlaylistQR.svelte'
+	import PlaylistQR from '$lib/components/PlaylistQR.svelte'
 	import Costco from '$lib/components/Costco.svelte'
 	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
 	import PageSelector from '$lib/components/PageSelector.svelte'
@@ -69,7 +69,7 @@
 <Settings />
 <TrackInfo />
 <Countdown />
-<PlaylistQr />
+<PlaylistQR />
 
 {#if costcoMode.current}
 	<Costco />

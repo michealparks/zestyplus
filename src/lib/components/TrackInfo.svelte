@@ -21,7 +21,7 @@
 		class="absolute bottom-0 left-0 flex items-end gap-1.5 p-4 text-white"
 		transition:fade={{ duration: 200 }}
 	>
-		<div class="h-[120px] w-[120px] overflow-hidden rounded shadow-2xl">
+		<div class="h-30 w-30 overflow-hidden rounded shadow-2xl">
 			<a
 				href="https://spotify.com"
 				target="_blank"

@@ -33,7 +33,7 @@
 
 {#if showQR.current && url}
 	<div
-		class="z-1 inline-flex w-24 p-4"
+		class="absolute right-0 bottom-0 z-1 inline-flex w-24 p-4"
 		bind:this={div}
 	></div>
 {/if}

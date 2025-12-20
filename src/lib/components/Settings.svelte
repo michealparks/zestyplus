@@ -37,7 +37,7 @@
 {#if open}
 	<button
 		aria-label="Exit settings"
-		class="absolute top-0 left-0 z-20 grid h-screen w-screen cursor-default bg-black opacity-80"
+		class="absolute top-0 left-0 z-20 grid h-screen w-screen cursor-default bg-amber-400 opacity-10"
 		onclick={(event) => {
 			if (event.target === event.currentTarget) {
 				open = false
@@ -45,7 +45,7 @@
 		}}
 	></button>
 	<div
-		class="pointer-events-none absolute top-0 left-0 z-20 grid h-screen w-screen place-content-center"
+		class="text-secondary-800 pointer-events-none absolute top-0 left-0 z-20 grid h-screen w-screen place-content-center"
 	>
 		<div
 			class="card pointer-events-auto w-80 rounded-sm bg-white p-4 shadow-xl"
@@ -59,15 +59,15 @@
 			</div>
 
 			<div class="flex flex-col items-center justify-center gap-4">
-				<div class="flex gap-2">
+				<div class="flex flex-col gap-2">
 					<small>Not sure what to play?</small>
 
 					<a
-						class="variant-filled-surface btn btn-sm text-xs"
+						class="btn btn-sm text-xs"
 						href="https://open.spotify.com/playlist/3TfXpq49b3Q93pCz4SfB7K?si=bf8730839a6844af&nd=1&dlsi=234712d881d24f8f"
 						target="_blank"
 					>
-						2024 Playlist
+						2025 Playlist
 					</a>
 				</div>
 

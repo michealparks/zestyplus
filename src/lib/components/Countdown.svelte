@@ -75,39 +75,64 @@
 	}
 
 	$effect(() => {
-		// 1. Real target: midnight
-		const year = new Date().getFullYear() + 1
-		const midnight = new Date(year, 0, 1, 0, 0, 0)
-		targetTime = midnight.getTime()
+		/**
+		 * DEBUG OPTIONS
+		 * Set debugTime to any future Date to test the countdown.
+		 * Leave as null to use real New Year's logic.
+		 *
+		 * Example:
+		 * const debugTime = getDateSecondsFromNow(30) // 30 seconds from now
+		 * const debugTime = new Date(Date.now() + 5 * 60_000) // 5 min from now
+		 */
+		const debugTime: Date | null = null
 
-		// 2. When to start the countdown: 10 minutes before
-		const startTime = new Date(midnight.getTime() - 10 * 60_000)
+		const countdownTarget = debugTime
+			? debugTime
+			: new Date(new Date().getFullYear() + 1, 0, 1, 0, 0, 0)
 
-		// If we're already past the start time, just start immediately
+		targetTime = countdownTarget.getTime()
+
+		/**
+		 * When to START the countdown
+		 * - If debugging, start immediately
+		 * - Otherwise: 10 minutes before midnight
+		 */
+		if (debugTime) {
+			// Start immediately when debugging
+			startCountdown()
+			return () => null
+		}
+
+		// --- REAL WORLD BEHAVIOR BELOW ---
+
+		const startTime = new Date(countdownTarget.getTime() - 10 * 60_000)
+
+		// If already past countdown start, start immediately
 		if (Date.now() >= startTime.getTime()) {
 			startCountdown()
 			return () => null
 		}
 
-		// Otherwise, schedule the start
+		// Otherwise schedule the start
 		const cleanup = onTargetTime(startTime, startCountdown)
 		return cleanup
 	})
 
-	let celebrateInterval = -1
-
 	$effect(() => {
 		if (displayState === 'celebrating') {
-			celebrateInterval = setInterval(celebrate, 500)
-			const intervalTime = 1000 * 60 * 3 /* 3 min */
-			setTimeout(() => {
+			const celebrateInterval = setInterval(celebrate, 500)
+			const intervalTime = 1000 * 60 * 1 /* 3 min */
+			const celebrateEndTimeout = setTimeout(() => {
 				fading = true
 				setTimeout(() => {
 					displayState = 'idle'
 				}, intervalTime)
 			}, intervalTime)
 
-			return () => clearInterval(celebrateInterval)
+			return () => {
+				clearInterval(celebrateInterval)
+				clearTimeout(celebrateEndTimeout)
+			}
 		}
 	})
 </script>
@@ -117,11 +142,7 @@
 		class="pointer-events-none absolute z-1 grid h-full w-full place-content-center text-8xl text-white"
 	>
 		<div class="flex gap-2">
-			🫲
-			<div class="w-48">
-				{display}
-			</div>
-			🫱
+			{display}
 		</div>
 	</div>
 {:else if displayState === 'celebrating'}
