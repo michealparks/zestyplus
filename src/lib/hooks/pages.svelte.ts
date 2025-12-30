@@ -41,15 +41,15 @@ export const useSchedulePageCycle = () => {
 		return setTimeout(transitionPage, duration, -1)
 	}
 
-	let id = -1
+	let timerID = -1
 
 	$effect(() => {
-		clearTimeout(id)
-		id = schedule()
+		clearTimeout(timerID)
+		timerID = schedule()
 	})
 
 	onNavigate(() => {
-		clearTimeout(id)
-		id = schedule()
+		clearTimeout(timerID)
+		timerID = schedule()
 	})
 }

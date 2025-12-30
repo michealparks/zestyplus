@@ -11,6 +11,9 @@ export class ControlHelper {
 	boidsController: BoidsController
 	workerPlanner: BoidsWorkerPlanner
 
+	boidsButton: any
+	obstacleButton: any
+
 	constructor(
 		boidsController: BoidsController,
 		workerPlanner: BoidsWorkerPlanner

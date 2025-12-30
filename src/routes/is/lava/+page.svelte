@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Vector2, Fog } from 'three'
-	import { T, useTask, useThrelte } from '@threlte/core'
+	import { Vector2 } from 'three'
+	import { T, useTask } from '@threlte/core'
 	import { OrbitControls } from '@threlte/extras'
 	import MarchingCubes from './MarchingCubes.svelte'
 	import { MarchingCube } from './MarchingCube'
@@ -8,17 +8,9 @@
 	import { useAnalyser } from '$lib'
 	import Lightformer from '$lib/components/Lightformer.svelte'
 
-	const { scene } = useThrelte()
 	const analyser = useAnalyser()
 
-	$effect(() => {
-		scene.fog = new Fog('black')
-		scene.fog.far = 20
-		scene.fog.near = 8
-		return () => (scene.fog = null)
-	})
-
-	const count = 30
+	const count = 20
 	const scale = 0.2
 	const balls: { marchingCube: MarchingCube }[] = []
 
@@ -36,13 +28,22 @@
 		balls.push({ marchingCube })
 	}
 
+	let elapsed = 0
 	useTask((delta) => {
+		elapsed += delta
+
 		for (let i = 0; i < count; i += 1) {
 			const { marchingCube } = balls[i]
 
-			if (analyser.level > 0.3 && marchingCube.animating === '') {
+			if (
+				elapsed >= 1 &&
+				analyser.level > 0.001 &&
+				marchingCube.animating === ''
+			) {
 				marchingCube.animating = 'up'
 				marchingCube.userData.x = -Math.PI / 2
+				elapsed = 0
+				continue
 			}
 
 			if (marchingCube.animating) {
@@ -63,21 +64,22 @@
 	makeDefault
 	position.z={15}
 	position.y={5}
-	zoom={3}
-	oncreate={(ref) => ref.lookAt(0, 0, 0)}
+	zoom={4}
+	oncreate={(ref) => ref.lookAt(0, -1, 0)}
 >
 	<OrbitControls
 		autoRotate
 		enablePan={false}
 		enableRotate={false}
 		enableZoom={false}
+		target={[0, -1, 0]}
 	/>
 </T.PerspectiveCamera>
 
 <T.AmbientLight />
 <T.DirectionalLight intensity={3} />
 
-<!-- <MarchingCubes>
+<MarchingCubes>
 	<T.MeshStandardMaterial
 		vertexColors
 		roughness={0.01}
@@ -86,6 +88,14 @@
 		<T is={marchingCube} />
 	{/each}
 	<T is={plane} />
-</MarchingCubes> -->
+</MarchingCubes>
+
+<T.Mesh position={[0, -2.1, 0]}>
+	<T.BoxGeometry args={[200, 0.1, 200]} />
+	<T.MeshStandardMaterial
+		roughness={0.1}
+		color="#333333"
+	/>
+</T.Mesh>
 
 <Lightformer />

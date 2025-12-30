@@ -35,7 +35,7 @@ interface Context {
 	/** Transient energy: fast level minus slow level (0..1-ish). */
 	punch: number
 
-	/** Perceptual-ish loudness (band-weighted). */
+	/** Perceptual-ish loudness (band-weighted, normalized). */
 	loudness: number
 
 	/** Shaped loudness curve for visuals (gamma + floor). */
@@ -79,10 +79,10 @@ export const provideAnalyser = () => {
 
 	// ---- Tuning knobs (feel free to tweak) ----
 	const fftSize = 1024
-	const logBinCount = 512
+	const logBinCount = 128
 
-	const minDb = -90
-	const maxDb = -10
+	const minDb = -80
+	const maxDb = -30
 	const smoothingTimeConstant = 0.8
 
 	// attack/release for level smoothing
@@ -164,7 +164,6 @@ export const provideAnalyser = () => {
 
 	const hzToIndex = (hz: number) => {
 		if (!binHz) return 0
-
 		return Math.max(0, Math.min(spectrum01.length - 1, Math.round(hz / binHz)))
 	}
 
@@ -192,8 +191,8 @@ export const provideAnalyser = () => {
 		binHz = sampleRate / analyser.fftSize
 
 		// log bins over a perceptual-ish frequency range
-		const minHz = 20
-		const maxHz = Math.min(16000, sampleRate / 2)
+		const minHz = logMinHz
+		const maxHz = Math.min(logMaxHz, sampleRate / 2)
 		const logMin = Math.log(minHz)
 		const logMax = Math.log(maxHz)
 
@@ -218,7 +217,7 @@ export const provideAnalyser = () => {
 
 	const createAnalyser = async () => {
 		try {
-			const stream = await navigator.mediaDevices.getUserMedia({
+			stream = await navigator.mediaDevices.getUserMedia({
 				audio: {
 					backgroundBlur: false,
 					echoCancellation: false,
@@ -229,7 +228,6 @@ export const provideAnalyser = () => {
 
 			audioContext = new AudioContext()
 
-			// Connect the microphone stream to the Web Audio context
 			const source = audioContext.createMediaStreamSource(stream)
 			analyser = audioContext.createAnalyser()
 
@@ -239,7 +237,6 @@ export const provideAnalyser = () => {
 			analyser.minDecibels = minDb
 			analyser.maxDecibels = maxDb
 
-			// Connect the source to the analyser
 			source.connect(analyser)
 
 			const n = analyser.frequencyBinCount
@@ -270,7 +267,7 @@ export const provideAnalyser = () => {
 			const { a, b } = logRanges[i]
 			const v = avgRange(spectrum01, a, b)
 
-			log01[i] = avgRange(spectrum01, a, b)
+			log01[i] = v
 			logSmooth01[i] = lerp(logSmooth01[i], v, 0.25)
 		}
 
@@ -316,9 +313,11 @@ export const provideAnalyser = () => {
 		slowLevel += (level - slowLevel) * 0.03
 		punch = Math.max(0, level - slowLevel)
 
-		// --- Perceptual-ish loudness (band weighted) ---
+		// --- Perceptual-ish loudness (band weighted, normalized) ---
 		{
-			const l =
+			// total weight = 0.4 + 0.8 + 1.0 + 0.9 + 0.7 + 0.4 = 4.2
+			const totalWeight = 4.2
+			const lRaw =
 				bands.bass * 0.4 +
 				bands.lowMid * 0.8 +
 				bands.mid * 1.0 +
@@ -326,7 +325,9 @@ export const provideAnalyser = () => {
 				bands.treble * 0.7 +
 				bands.air * 0.4
 
-			loudness += (l - loudness) * 0.2
+			const lNorm = totalWeight > 0 ? lRaw / totalWeight : 0
+			loudness += (lNorm - loudness) * 0.2
+			loudness = clamp01(loudness)
 		}
 
 		// --- Shaped curve for visuals ---
@@ -379,13 +380,13 @@ export const provideAnalyser = () => {
 
 		// --- Heuristic drum-ish controls ---
 		{
-			const k = bands.bass * 0.9 + punch * 0.6
-			const s = bands.highMid * 0.9 + punch * 0.4
-			const h = bands.treble * 0.9 + bands.air * 0.7
+			const kVal = bands.bass * 0.9 + punch * 0.6
+			const sVal = bands.highMid * 0.9 + punch * 0.4
+			const hVal = bands.treble * 0.9 + bands.air * 0.7
 
-			kick += (k - kick) * 0.3
-			snare += (s - snare) * 0.3
-			hat += (h - hat) * 0.25
+			kick += (kVal - kick) * 0.3
+			snare += (sVal - snare) * 0.3
+			hat += (hVal - hat) * 0.25
 
 			kick = clamp01(kick)
 			snare = clamp01(snare)
@@ -411,7 +412,7 @@ export const provideAnalyser = () => {
 
 	$effect(() => {
 		if (analyser) {
-			const id = setInterval(update, 1000 / 30)
+			const id = setInterval(update, 1000 / 24)
 			return () => clearInterval(id)
 		}
 	})

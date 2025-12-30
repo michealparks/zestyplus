@@ -18,7 +18,6 @@
 	} from 'three/webgpu'
 	import { pass, mrt, output, emissive, uniform } from 'three/tsl'
 	import { bloom } from 'three/addons/tsl/display/BloomNode.js'
-
 	import { OrbitControls } from '@threlte/extras'
 	import { hueShift, useAnalyser } from '$lib'
 
@@ -62,42 +61,6 @@
 	const obstacleMesh = new InstancedMesh(undefined, undefined, 1000)
 
 	const boundary = boidsController.getBoundary()
-
-	// const createGrid = (subdivisionCount: number) => {
-	// 	this.gridVisual = new THREE.Group()
-	// 	const b = this.boidsController.getBoundary()
-	// 	const maxLen = Math.max(b[0], b[1], b[2])
-	// 	const len = maxLen / subdivisionCount
-	// 	for (let x = 0; x < subdivisionCount; x++) {
-	// 		for (let y = 0; y < subdivisionCount; y++) {
-	// 			for (let z = 0; z < subdivisionCount; z++) {
-	// 				if (
-	// 					(x + 0.5) * len > b[0] ||
-	// 					(y + 0.5) * len > b[1] ||
-	// 					(z + 0.5) * len > b[2]
-	// 				) {
-	// 					continue
-	// 				}
-
-	// 				// create boundary wireframe
-	// 				const geometry = new THREE.BoxGeometry(len, len, len)
-	// 				const wireframe = new THREE.EdgesGeometry(geometry)
-	// 				const line = new THREE.LineSegments(wireframe)
-	// 				//line.material.depthTest = false;
-	// 				line.material.color = new THREE.Color(0x999999)
-	// 				line.material.transparent = false
-	// 				line.position.x = len / 2 + x * len
-	// 				line.position.y = len / 2 + y * len
-	// 				line.position.z = len / 2 + z * len
-	// 				//this.scene.add(line);
-	// 				this.gridVisual.add(line)
-	// 			}
-	// 		}
-	// 	}
-
-	// 	this.scene.add(this.gridVisual)
-	// 	this.gridVisual.visible = false
-	// }
 
 	const color = new Color()
 	const object = new Object3D()
@@ -172,9 +135,14 @@
 		}
 	})
 
-	const { scene, camera, renderer, renderMode } = useThrelte<WebGPURenderer>()
+	const { scene, camera, renderer, renderMode, size } =
+		useThrelte<WebGPURenderer>()
 
 	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		postProcessing.renderer.setSize($size.width, $size.height)
+	})
 
 	$effect(() => {
 		renderMode.set('manual')

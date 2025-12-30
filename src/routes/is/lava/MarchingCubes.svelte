@@ -29,7 +29,7 @@
 	} & Props<MarchingCubes>
 
 	let {
-		resolution = 75,
+		resolution = 13,
 		children,
 		ref = $bindable(),
 		...props
@@ -60,7 +60,7 @@
 		}
 	})
 
-	useTask(() => {
+	setInterval(() => {
 		marchingCubes.reset()
 
 		for (const child of marchingCubes.children) {
@@ -84,7 +84,7 @@
 		}
 
 		marchingCubes.update()
-	})
+	}, 1000 / 24)
 </script>
 
 <T

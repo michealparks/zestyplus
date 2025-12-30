@@ -9,7 +9,14 @@
 		AutoColliders,
 		RigidBody,
 	} from '@threlte/rapier'
-	import { Quaternion, Vector3, type Object3D, type Vector3Tuple } from 'three'
+	import {
+		Material,
+		Mesh,
+		Quaternion,
+		Vector3,
+		type Object3D,
+		type Vector3Tuple,
+	} from 'three'
 	import { ConvexObjectBreaker } from 'three/addons'
 	import Self from './Breakable.svelte'
 
@@ -111,8 +118,7 @@
 				item.quaternion.premultiply(quat)
 
 				item.castShadow = item.receiveShadow = true
-
-				item.material = mesh.material.clone()
+				;(item as Mesh).material = ((mesh as Mesh).material as Material).clone()
 			}
 		}
 

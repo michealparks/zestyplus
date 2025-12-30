@@ -19,9 +19,14 @@
 	import Reflection from '$lib/components/Reflection.svelte'
 
 	const analyser = useAnalyser()
-	const { camera, scene, renderer, renderMode } = useThrelte<WebGPURenderer>()
+	const { camera, scene, renderer, renderMode, size } =
+		useThrelte<WebGPURenderer>()
 
 	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		postProcessing.renderer.setSize($size.width, $size.height)
+	})
 
 	$effect(() => {
 		postProcessing.outputNode = toonOutlinePass(scene, $camera)
@@ -87,7 +92,7 @@
 			const line = lines[i]
 			const dir = i % 2 === 0 ? 1 : -1
 
-			const x = analyser.log01[i * 7] * 20 * dir
+			const x = analyser.log01[i * 2] * 20 * dir
 
 			shiftAndAddVector(line.positions, x, i / 5, z - 10)
 			line.geometry.setPositions(line.positions)

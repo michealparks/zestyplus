@@ -41,7 +41,7 @@
 	import type Node from 'three/src/nodes/core/Node.js'
 	import { WebGPURenderer } from 'three/src/Three.WebGPU.Nodes.js'
 
-	const { camera, scene, renderer, renderMode, renderStage } =
+	const { camera, scene, renderer, renderMode, renderStage, size } =
 		useThrelte<WebGPURenderer>()
 
 	$effect(() => {
@@ -108,7 +108,7 @@
 
 			const timeScaled = vec3(time, 0, time.mul(0.3))
 
-			const sampleGrain = (scale: number, timeScale: number = 1) =>
+			const sampleGrain = (scale: number, timeScale = 1) =>
 				texture3D(
 					noiseTexture3D,
 					positionRay.add(timeScaled.mul(timeScale)).mul(scale).mod(1),
@@ -173,6 +173,10 @@
 	// Post-Processing
 
 	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		postProcessing.renderer.setSize($size.width, $size.height)
+	})
 
 	// Layers
 

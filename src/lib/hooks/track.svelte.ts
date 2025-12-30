@@ -1,101 +1,91 @@
-import { useAuth, type Token } from './auth.svelte'
+import { getContext, setContext } from 'svelte'
+import { useSpotify } from '$lib/api/spotify/auth.svelte'
+import {
+	type TrackInfo,
+	fetchCurrentlyPlayingTrack,
+} from '$lib/api/spotify/track'
+import { fetchPlaylistDetails } from '$lib/api/spotify/playlist'
 
-export interface TrackInfo {
-	context?: {
-		external_urls?: {
-			spotify?: string
+interface Context {
+	current: TrackInfo | undefined
+}
+
+const key = Symbol('current-track-context')
+
+export const provideTrack = () => {
+	let timerID = 0
+	let current = $state.raw<TrackInfo>()
+	let playlistID = $state<string>()
+
+	const fetchTrack = async () => {
+		try {
+			const response = await fetchCurrentlyPlayingTrack()
+			current = response
+		} catch {
+			current = undefined
 		}
-	}
-	item: {
-		id: string
-		name: string
-		album: {
-			name: string
-			images: [
-				{
-					height: number
-					width: number
-					url: string
-				},
-			]
-		}
-		artists: [{ name: string }]
-		duration_ms: number
-	}
-	progress_ms: number
-}
 
-class Track {
-	current = $state<TrackInfo>()
-}
-
-const track = new Track()
-
-let effectCreated = false
-
-const statuses = {
-	NO_TRACK_PLAYING: 204,
-}
-
-const fetchCurrentlyPlayingTrack = async (
-	token: Token
-): Promise<TrackInfo | undefined> => {
-	const url = 'https://api.spotify.com/v1/me/player/currently-playing'
-
-	try {
-		const response = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${token.access}`,
-				'Content-Type': 'application/json',
-			},
-		})
-
-		if (response.status === statuses.NO_TRACK_PLAYING) {
-			console.log('No track is currently playing.')
+		if (current === undefined) {
+			timerID = setTimeout(fetchTrack, 3000)
 			return
 		}
 
-		if (!response.ok) {
-			console.error(
-				`fetchCurrentlyPlayingTrack: ${response.status} - ${response.statusText}`
-			)
-			return
-		}
+		if (current.context?.type === 'playlist') {
+			const id = current.context.uri.split(':').at(-1)
 
-		return response.json()
-	} catch (error) {
-		console.error('Error fetching currently playing track:', error)
-	}
-}
-
-const startTrackFetchLoop = async (token: Token) => {
-	const response = await fetchCurrentlyPlayingTrack(token)
-	track.current = response
-
-	if (response === undefined) {
-		setTimeout(startTrackFetchLoop, 3000, token)
-		return
-	}
-
-	const timeLeft = response.item.duration_ms - response.progress_ms + 1000
-
-	setTimeout(startTrackFetchLoop, timeLeft, token)
-}
-
-export const useTrack = () => {
-	const { token, authenticated } = useAuth()
-
-	if (!effectCreated) {
-		$effect(() => {
-			if (authenticated.current === 'logged-in') {
-				startTrackFetchLoop(token)
+			if (id !== playlistID) {
+				playlistID
 			}
-		})
+			playlistID = current.context.uri.split(':').at(-1)
+		}
 
-		effectCreated = true
+		console.log(current)
+
+		const timeLeft = current.item.duration_ms - current.progress_ms + 1000
+
+		timerID = setTimeout(fetchTrack, timeLeft)
 	}
 
-	return {
-		track,
-	}
+	const spotify = useSpotify()
+
+	$effect(() => {
+		if (spotify.authState !== 'logged-in') {
+			return
+		}
+
+		fetchTrack()
+		return () => clearTimeout(timerID)
+	})
+
+	$effect(() => {
+		if (playlistID) {
+			fetchPlaylistDetails(playlistID).then((playlist) => {
+				let elapsed = 0
+
+				const results = []
+				for (const { track } of playlist.tracks.items) {
+					const result = {
+						name: track.name,
+						startTime: elapsed / 1000 / 60,
+					}
+
+					elapsed += track.duration_ms
+
+					results.push(result)
+				}
+
+				console.log(results)
+			})
+		}
+	})
+
+	setContext<Context>(key, {
+		get current() {
+			return current
+		},
+	})
+}
+
+export const useTrack = (): Context => {
+	return getContext<Context>(key)
 }

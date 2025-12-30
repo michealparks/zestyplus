@@ -26,7 +26,7 @@
 {#if costco}
 	<div class="costco z-10 h-screen">
 		<img
-			class="costco pointer-events-none absolute left-0 top-0 scale-[2.5] opacity-20"
+			class="costco pointer-events-none absolute top-0 left-0 scale-[2.5] opacity-50"
 			src="/costco.png"
 			alt="Costco"
 		/>

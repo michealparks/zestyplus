@@ -1,4 +1,4 @@
-export const useDocumentTitle = () => {
+export const provideDocumentTitle = () => {
 	$effect(() => {
 		let pattern = 0
 

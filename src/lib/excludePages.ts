@@ -1,1 +1,1 @@
-export default ['tubeman', 'ribbons', 'rubix', 'lava'] as const
+export default ['tubeman', 'ribbons', 'rubix']

@@ -1,5 +1,9 @@
+<script>
+	import { resolve } from '$app/paths'
+</script>
+
 <div
-	class="absolute left-0 top-0 grid h-screen w-screen place-content-center"
+	class="absolute top-0 left-0 grid h-screen w-screen place-content-center"
 	style="
 		background-image: radial-gradient(at 100% 0%,hsla(135,34%,70%,.14) 0px,transparent 50%),radial-gradient(at 85% 100%,hsla(31,83%,50%,.14) 0px,transparent 50%);
 		background-attachment: fixed;
@@ -8,7 +12,7 @@
 		background-size: cover;
 	"
 >
-	<div class="flex max-w-[30rem] flex-col gap-2 p-4 text-white">
+	<div class="flex max-w-120 flex-col gap-2 p-4 text-white">
 		<p>
 			<strong class="text-error-500">zesty.plus</strong> is a music visualizer,
 			inspired by what iTunes - or winamp - did back in the days of yore. What
@@ -22,14 +26,14 @@
 
 		<div class="flex gap-2">
 			<a
-				class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-gradient-to-br"
-				href="/"
+				class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-linear-to-br"
+				href={resolve('/')}
 			>
 				<span class="text-xs">←</span>
 			</a>
 			<a
-				class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-gradient-to-br"
-				href="/is/lines"
+				class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-linear-to-br"
+				href={resolve('/is/lines')}
 			>
 				<span class="text-xs">get zesty</span> 🤌
 			</a>

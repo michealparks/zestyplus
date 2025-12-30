@@ -1,21 +1,15 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-navigation-without-resolve */
+
 	import { fade } from 'svelte/transition'
-
-	import { PersistedState } from 'runed'
 	import { useTrack } from '$lib'
-	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
+	import { useSettings } from '$lib/hooks/useSettings.svelte'
 
-	const { track } = useTrack()
-
-	const visible = new PersistedState('trackinfo-visible', true)
-
-	useKeybinding(
-		Keybindings.TrackInfo,
-		() => (visible.current = !visible.current)
-	)
+	const { showTrackInfo } = useSettings()
+	const track = useTrack()
 </script>
 
-{#if visible.current && track.current}
+{#if showTrackInfo.current && track.current}
 	{@const { item } = track.current}
 	<div
 		class="absolute bottom-0 left-0 flex items-end gap-1.5 p-4 text-white"
@@ -57,21 +51,18 @@
 				</p>
 			</a>
 			<p class="text-xs leading-none opacity-75">
-				{#each item.artists as artist (artist.name)}
+				{#each item.artists as artist, index (artist.name)}
 					<a
 						href={artist.external_urls.spotify}
 						target="_blank"
 					>
-						{artist.name}
+						{artist.name}{item.artists.length > 1 &&
+						index !== item.artists.length - 1
+							? ', '
+							: ''}
 					</a>
 				{/each}
 			</p>
 		</div>
 	</div>
 {/if}
-
-<style>
-	span:not(:last-child)::after {
-		content: ', ';
-	}
-</style>

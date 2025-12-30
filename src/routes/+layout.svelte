@@ -1,14 +1,25 @@
 <script lang="ts">
 	import '../app.css'
 
-	import { Keybindings, useKeybinding } from '$lib/hooks/keybindings.svelte'
-	import { useDocumentTitle } from '$lib/hooks/title.svelte'
+	import {
+		Keybindings,
+		provideKeybinding,
+		useKeybinding,
+	} from '$lib/hooks/keybindings.svelte'
+	import { provideDocumentTitle } from '$lib/hooks/title.svelte'
+	import { provideCountdown } from '$lib/hooks/useCountdown.svelte'
+	import { provideSettings } from '$lib/hooks/useSettings.svelte'
 
 	let { children } = $props()
 
-	useKeybinding(Keybindings.Fullscreen, () => document.body.requestFullscreen())
+	provideKeybinding()
+	provideSettings()
+	provideCountdown()
+	provideDocumentTitle()
 
-	useDocumentTitle()
+	useKeybinding(Keybindings.Fullscreen, () => {
+		document.body.requestFullscreen()
+	})
 </script>
 
 {@render children()}

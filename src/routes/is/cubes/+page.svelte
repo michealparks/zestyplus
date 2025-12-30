@@ -10,7 +10,7 @@
 	} from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { hueShift, useAnalyser } from '$lib'
-	import { RoundedBoxGeometry, Stars } from '@threlte/extras'
+	import { RoundedBoxGeometry } from '@threlte/extras'
 	import Lightformer from '$lib/components/Lightformer.svelte'
 
 	const { camera, scene } = useThrelte()
@@ -74,9 +74,9 @@
 			matrix.decompose(position, quaternion, scale)
 
 			const ftt = analyser.logSmooth01[index % 128]
-			scale.setScalar(Math.max(ftt / 100, 0.5))
+			scale.setScalar(Math.max(ftt * 10, 0.5))
 
-			mesh.setColorAt(index, hueShift(color.set(hex), ftt / 1000))
+			mesh.setColorAt(index, hueShift(color.set(hex), ftt))
 
 			if (position.z > camera.current.position.z) {
 				position.z = -j / 2
@@ -112,10 +112,11 @@
 <T.AmbientLight intensity={0.5} />
 
 <T is={mesh}>
-	<RoundedBoxGeometry />
+	<RoundedBoxGeometry
+		creaseAngle={10}
+		radius={0.2}
+	/>
 	<T.MeshStandardMaterial roughness={0.05} />
 </T>
 
 <Lightformer />
-
-<Stars bind:ref={stars} />

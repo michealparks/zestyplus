@@ -15,8 +15,15 @@
 	import { WebGPURenderer } from 'three/src/Three.WebGPU.Nodes.js'
 	import Reflection from '$lib/components/Reflection.svelte'
 
-	const { renderer, scene, camera, renderMode } = useThrelte<WebGPURenderer>()
+	const analyser = useAnalyser()
+	const { renderer, scene, camera, renderMode, size } =
+		useThrelte<WebGPURenderer>()
+
 	const postProcessing = new PostProcessing(renderer)
+
+	$effect(() => {
+		postProcessing.renderer.setSize($size.width, $size.height)
+	})
 
 	$effect(() => {
 		postProcessing.outputNode = toonOutlinePass(scene, $camera)
@@ -31,10 +38,7 @@
 		postProcessing.render()
 	})
 
-	const { size } = useThrelte()
-	const analyser = useAnalyser()
-
-	const count = 20
+	const count = 12
 	const gap = 1
 	const offset = (count * gap) / 2
 
@@ -62,13 +66,13 @@
 	}
 
 	useTask(() => {
-		for (let i = 0, l = analyser.log01.length; i < l; i += 1) {
-			const barHeight = analyser.log01[i]
+		for (let i = 0, l = count * count; i < l; i += 1) {
+			const barHeight = analyser.logSmooth01[i]
 
 			if (barHeight) {
 				mesh.getMatrixAt(i, matrix)
 				matrix.decompose(position, quaternion, scale)
-				position.y = barHeight * 10
+				position.y = barHeight * 6
 				scale.set(1, position.y * 4 + 1, 1)
 				matrix.compose(position, quaternion, scale)
 				mesh.setMatrixAt(i, matrix)

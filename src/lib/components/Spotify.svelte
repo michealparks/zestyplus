@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { useAuth } from '$lib'
+	import { useSpotify } from '$lib/api/spotify/auth.svelte'
 
-	const { authenticated, login, logout } = useAuth()
+	const spotify = useSpotify()
 </script>
 
 {#snippet Button(text: string, onclick: () => void)}
@@ -23,11 +23,11 @@
 {/snippet}
 
 <div>
-	{#if authenticated.current === 'pending'}
+	{#if spotify.authState === 'pending'}
 		...
-	{:else if authenticated.current === 'logged-in'}
-		{@render Button('Logout Spotify', () => logout())}
-	{:else if authenticated.current === 'logged-out'}
-		{@render Button('Connect Spotify', () => login())}
+	{:else if spotify.authState === 'logged-in'}
+		{@render Button('Logout Spotify', () => spotify.logout())}
+	{:else if spotify.authState === 'logged-out'}
+		{@render Button('Connect Spotify', () => spotify.login())}
 	{/if}
 </div>

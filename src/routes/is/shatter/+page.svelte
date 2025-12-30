@@ -15,6 +15,7 @@
 	import { useAnalyser } from '$lib'
 	import { lerp } from 'three/src/math/MathUtils.js'
 	import Reflection from '$lib/components/Reflection.svelte'
+	import Lightformer from '$lib/components/Lightformer.svelte'
 
 	const { scene } = useThrelte()
 	const { world } = useRapier()
@@ -22,7 +23,7 @@
 
 	const create = () => {
 		const material = new MeshStandardNodeMaterial()
-		material.roughness = 0
+		material.roughness = 0.1
 		const geometry = new BoxGeometry()
 		const mesh = new Mesh(geometry, material)
 		mesh.castShadow = mesh.receiveShadow = true
@@ -75,7 +76,7 @@
 			const mesh = arr[(Math.random() * l) | 0]
 			if (mesh) {
 				const material = mesh.material as MeshStandardMaterial
-				color.setHSL(Math.random(), 1, 0.4)
+				color.setHSL(Math.random(), 1, 0.6)
 				material.color.set(color)
 			}
 		}
@@ -120,8 +121,6 @@
 		autoBreak
 		minBreakForce={0.0}
 		maxDepth={2}
-		castShadow
-		receiveShadow
 	/>
 {/each}
 
@@ -132,6 +131,8 @@
 		</T.Mesh>
 	</AutoColliders>
 </RigidBody>
+
+<Lightformer />
 
 <!-- <RigidBody type="fixed">
 	<AutoColliders shape="cuboid">

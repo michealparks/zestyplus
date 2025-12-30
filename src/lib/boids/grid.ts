@@ -101,7 +101,6 @@ export class Grid {
 		if (entityIndex == -1) {
 			// serious error!
 			throw 'removeEntity() can not find the entity to be removed!'
-			return
 		} else {
 			gridEntities.splice(entityIndex, 1)
 			entity.setGrid(undefined)
@@ -134,7 +133,6 @@ export class Grid {
 		if (entityIndex == -1) {
 			// serious error!
 			throw 'moveEntity() can not find the entity to be removed!'
-			return
 		} else {
 			gridEntities.splice(entityIndex, 1)
 		}
