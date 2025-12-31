@@ -33,7 +33,7 @@ export const provideWebcamTexture = () => {
 
 			webcamState = 'streaming'
 		} catch (error) {
-			console.error(error)
+			console.error('Webcam stream failed to start:', error)
 			webcamState = 'failed'
 			return
 		}

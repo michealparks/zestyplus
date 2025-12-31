@@ -99,7 +99,6 @@
 		}
 
 		if (count >= 10) {
-			console.log('here')
 			color = color.setHSL(Math.random(), 0.8, 0.5)
 		}
 

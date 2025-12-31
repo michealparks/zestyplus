@@ -52,10 +52,8 @@ export const fetchCurrentlyPlayingTrack = async (): Promise<
 			},
 		})
 
-		console.log(response)
 		if (response.status === statuses.NOT_AUTHORIZED) {
 			const { state } = await fetchAuthCode()
-			console.log('ugh')
 
 			if (state === 'logged-in') {
 				return fetchCurrentlyPlayingTrack()

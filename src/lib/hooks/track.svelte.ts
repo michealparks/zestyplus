@@ -12,6 +12,8 @@ interface Context {
 
 const key = Symbol('current-track-context')
 
+const fetchPlaylistMetadata = true
+
 export const provideTrack = () => {
 	let timerID = 0
 	let current = $state.raw<TrackInfo>()
@@ -39,8 +41,6 @@ export const provideTrack = () => {
 			playlistID = current.context.uri.split(':').at(-1)
 		}
 
-		console.log(current)
-
 		const timeLeft = current.item.duration_ms - current.progress_ms + 1000
 
 		timerID = setTimeout(fetchTrack, timeLeft)
@@ -57,27 +57,29 @@ export const provideTrack = () => {
 		return () => clearTimeout(timerID)
 	})
 
-	$effect(() => {
-		if (playlistID) {
-			fetchPlaylistDetails(playlistID).then((playlist) => {
-				let elapsed = 0
+	if (fetchPlaylistMetadata) {
+		$effect(() => {
+			if (playlistID) {
+				fetchPlaylistDetails(playlistID).then((playlist) => {
+					let elapsed = 0
 
-				const results = []
-				for (const { track } of playlist.tracks.items) {
-					const result = {
-						name: track.name,
-						startTime: elapsed / 1000 / 60,
+					const results = []
+					for (const { track } of playlist.tracks.items) {
+						const result = {
+							name: track.name,
+							startTime: elapsed / 1000 / 60,
+						}
+
+						elapsed += track.duration_ms
+
+						results.push(result)
 					}
 
-					elapsed += track.duration_ms
-
-					results.push(result)
-				}
-
-				console.log(results)
-			})
-		}
-	})
+					console.log(results)
+				})
+			}
+		})
+	}
 
 	setContext<Context>(key, {
 		get current() {
