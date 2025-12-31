@@ -1,19 +1,24 @@
 <script lang="ts">
 	import {
-		Points,
+		BoxGeometry,
 		Color,
 		DirectionalLight,
 		InstancedMesh,
 		Matrix4,
 		Quaternion,
 		Vector3,
+		Fog,
 	} from 'three'
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { hueShift, useAnalyser } from '$lib'
-	import { RoundedBoxGeometry } from '@threlte/extras'
 	import Lightformer from '$lib/components/Lightformer.svelte'
 
 	const { camera, scene } = useThrelte()
+
+	$effect(() => {
+		scene.fog = new Fog('#000', 2, 30)
+		return () => (scene.fog = null)
+	})
 
 	const numCubes = 1000
 
@@ -21,6 +26,9 @@
 	mesh.name = 'cubes'
 	mesh.frustumCulled = false
 	mesh.castShadow = mesh.receiveShadow = true
+
+	const outlines = new InstancedMesh(undefined, undefined, numCubes)
+	outlines.frustumCulled = false
 
 	const position = new Vector3()
 	const quaternion = new Quaternion()
@@ -43,8 +51,11 @@
 			position.set(a * 2 + b, c, -index / 2)
 			quaternion.random()
 			matrix.compose(position, quaternion, scale)
+
 			mesh.setMatrixAt(index, matrix)
 			mesh.setColorAt(index, hueShift(color, 0))
+
+			outlines.setMatrixAt(index, matrix)
 		}
 
 		if (mesh.instanceColor) {
@@ -57,24 +68,15 @@
 	const light = new DirectionalLight()
 	scene.add(light.target)
 
-	let stars = $state.raw<Points>()
-
 	useTask((delta) => {
-		camera.current.position.z -= delta * 20
-
-		if (stars) {
-			stars.position.z = camera.current.position.z
-			light.position.z = camera.current.position.z + 2
-
-			light.target.position.copy(camera.current.position)
-		}
+		camera.current.position.z -= delta * 12
 
 		for (let index = 0; index < numCubes; index += 1) {
 			mesh.getMatrixAt(index, matrix)
 			matrix.decompose(position, quaternion, scale)
 
-			const ftt = analyser.logSmooth01[index % 128]
-			scale.setScalar(Math.max(ftt * 10, 0.5))
+			const ftt = analyser.log01[index % 128]
+			scale.setScalar(Math.max(ftt * 4, 0.5))
 
 			mesh.setColorAt(index, hueShift(color.set(hex), ftt))
 
@@ -85,6 +87,7 @@
 
 			matrix.compose(position, quaternion, scale)
 			mesh.setMatrixAt(index, matrix)
+			outlines.setMatrixAt(index, matrix)
 		}
 
 		if (mesh.instanceColor) {
@@ -92,6 +95,7 @@
 		}
 
 		mesh.instanceMatrix.needsUpdate = true
+		outlines.instanceMatrix.needsUpdate = true
 	})
 </script>
 
@@ -112,11 +116,13 @@
 <T.AmbientLight intensity={0.5} />
 
 <T is={mesh}>
-	<RoundedBoxGeometry
-		creaseAngle={10}
-		radius={0.2}
-	/>
+	<T.BoxGeometry />
 	<T.MeshStandardMaterial roughness={0.05} />
+</T>
+
+<T is={outlines}>
+	<T.EdgesGeometry args={[new BoxGeometry(), 1]} />
+	<T.MeshBasicMaterial wireframe />
 </T>
 
 <Lightformer />

@@ -1,7 +1,9 @@
+import { fetchAuthCode } from './auth.svelte'
 import { token } from './token'
 
 const statuses = {
 	NO_TRACK_PLAYING: 204,
+	NOT_AUTHORIZED: 401,
 } as const
 
 export interface TrackInfo {
@@ -49,6 +51,16 @@ export const fetchCurrentlyPlayingTrack = async (): Promise<
 				'Content-Type': 'application/json',
 			},
 		})
+
+		console.log(response)
+		if (response.status === statuses.NOT_AUTHORIZED) {
+			const { state } = await fetchAuthCode()
+			console.log('ugh')
+
+			if (state === 'logged-in') {
+				return fetchCurrentlyPlayingTrack()
+			}
+		}
 
 		if (response.status === statuses.NO_TRACK_PLAYING) {
 			console.log('No track is currently playing.')

@@ -16,9 +16,15 @@
 	const record = new Mesh()
 	const needleShoulder = new Mesh()
 
+	let volume1 = $state(0)
+	let volume2 = $state(0)
+
 	useTask((dt) => {
 		record.rotation.y -= dt
 		needleShoulder.rotation.y -= dt / 1000
+
+		volume1 = analyser.spectrum01[0]
+		volume2 = analyser.spectrum01[8]
 	})
 </script>
 
@@ -127,13 +133,13 @@
 </T.Mesh>
 
 <Speaker
-	volume={analyser.loudness}
+	volume={volume1}
 	position={[-3, 0, 0]}
 	rotation.y={Math.PI / 8}
 />
 
 <Speaker
-	volume={analyser.loudness}
+	volume={volume2}
 	position={[3, 0, 0]}
 	rotation.y={-Math.PI / 8}
 />

@@ -35,7 +35,7 @@ export const createShader = (videoTexture: VideoTexture) => {
 	const pixelateMat = new MeshStandardNodeMaterial()
 	const uVideo = texture(videoTexture)
 	const resolution = uniform(vec2(640, 480), 'vec2')
-	const pixelSize = uniform(1, 'float')
+	const pixelSize = uniform(20, 'float')
 	const vuv = uv()
 
 	pixelateMat.colorNode = Fn(() => {

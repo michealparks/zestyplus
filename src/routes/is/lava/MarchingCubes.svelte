@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	import { MeshBasicMaterial } from 'three/webgpu'
-	import { T, useTask, type Props } from '@threlte/core'
+	import { T, type Props } from '@threlte/core'
 	import { MarchingCube } from './MarchingCube'
 	import { MarchingCubes } from 'three/examples/jsm/Addons.js'
 	import { MarchingPlane } from './MarchingPlane'
@@ -29,7 +29,7 @@
 	} & Props<MarchingCubes>
 
 	let {
-		resolution = 13,
+		resolution = 12,
 		children,
 		ref = $bindable(),
 		...props

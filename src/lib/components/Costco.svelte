@@ -19,7 +19,7 @@
 			}
 		}
 
-		flip()
+		setTimeout(flip, 2000)
 	})
 </script>
 

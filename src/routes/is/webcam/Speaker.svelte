@@ -4,7 +4,7 @@
 	import { MathUtils } from 'three/webgpu'
 	import { T } from '@threlte/core'
 	import { Edges } from '@threlte/extras'
-	import { cubicIn, cubicOut } from 'svelte/easing'
+	import { quartIn, quartOut } from 'svelte/easing'
 	import { Tween } from 'svelte/motion'
 
 	export type SpeakerProps = Props<Group> & {
@@ -22,35 +22,35 @@
 
 	const jump = () => {
 		isJumping = true
-		const upDuration = 10 + Math.random() * 50
+		const upDuration = 70 + Math.random() * 50
 
 		jumpOffsetY.set(0.2, {
 			duration: upDuration,
-			easing: cubicOut,
+			easing: quartOut,
 		})
 		jumpRotationX.set(Math.random() * 4 * randomSign(), {
 			duration: upDuration,
-			easing: cubicOut,
+			easing: quartOut,
 		})
 		jumpRotationZ.set(Math.random() * 4 * randomSign(), {
 			duration: upDuration,
-			easing: cubicOut,
+			easing: quartOut,
 		})
 
 		setTimeout(() => {
-			const downDuration = 40 + Math.random() * 70
+			const downDuration = 120 + Math.random() * 70
 
 			jumpOffsetY.set(0, {
 				duration: downDuration,
-				easing: cubicIn,
+				easing: quartIn,
 			})
 			jumpRotationX.set(0, {
 				duration: downDuration,
-				easing: cubicIn,
+				easing: quartIn,
 			})
 			jumpRotationZ.set(0, {
 				duration: downDuration,
-				easing: cubicIn,
+				easing: quartIn,
 			})
 
 			setTimeout(() => {
@@ -60,7 +60,7 @@
 	}
 
 	$effect(() => {
-		if (volume > 0.25 && !isJumping) jump()
+		if (volume > 0.15 && !isJumping) jump()
 	})
 </script>
 

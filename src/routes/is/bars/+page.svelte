@@ -32,9 +32,8 @@
 	}
 
 	useTask(() => {
-		console.log(count, analyser.spectrum01.length)
 		for (let i = 0, l = count; i < l; i += 1) {
-			const barHeight = analyser.spectrum01[i]
+			const barHeight = analyser.spectrum01[i] ?? 0
 
 			if (barHeight) {
 				mesh.getMatrixAt(i, matrix)

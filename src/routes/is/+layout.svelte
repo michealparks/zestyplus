@@ -23,7 +23,7 @@
 
 	let { children } = $props()
 
-	const { showDebug, showCostco } = useSettings()
+	const { showDebug, showQR, showCostco, showWikipedia } = useSettings()
 
 	extend(THREE)
 
@@ -38,7 +38,7 @@
 <div class="absolute top-0 left-0 h-dvh w-dvw">
 	<Canvas
 		renderMode={initialized ? 'always' : 'manual'}
-		dpr={0.75}
+		dpr={1}
 		createRenderer={(canvas) => {
 			const renderer = new WebGPURenderer({
 				canvas,
@@ -66,14 +66,19 @@
 	<AudioAnalyserDebug />
 {/if}
 
-<Wikipedia />
-
 <PageTransition />
 <PageSelector />
 <Settings />
 <TrackInfo />
 <Countdown />
-<PlaylistQR />
+
+{#if showQR.current}
+	<PlaylistQR />
+{/if}
+
+{#if showWikipedia.current}
+	<Wikipedia />
+{/if}
 
 {#if showCostco.current}
 	<Costco />

@@ -1,5 +1,6 @@
 export const Keybindings = {
 	CostcoMode: 'c',
+	Wikipedia: 'w',
 	Debug: 'd',
 	QRCode: 'q',
 	Settings: 's',

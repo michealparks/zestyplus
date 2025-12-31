@@ -1,9 +1,7 @@
 <script lang="ts">
 	import QrCreator from 'qr-creator'
 	import { useTrack } from '$lib/hooks/track.svelte'
-	import { useSettings } from '$lib/hooks/useSettings.svelte'
 
-	const { showQR } = useSettings()
 	const track = useTrack()
 
 	let div = $state.raw<HTMLElement>()
@@ -27,7 +25,7 @@
 	})
 </script>
 
-{#if showQR.current && url}
+{#if url}
 	<div class="absolute right-0 bottom-0 z-1 items-center p-4">
 		<div
 			class="inline-flex w-22"

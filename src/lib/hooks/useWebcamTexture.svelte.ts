@@ -39,7 +39,23 @@ export const provideWebcamTexture = () => {
 		}
 	}
 
-	requestAccess()
+	$effect(() => {
+		requestAccess()
+
+		return () => {
+			const stream = video.srcObject as MediaStream
+
+			if (stream) {
+				// 1. Stop all tracks
+				stream.getTracks().forEach((track) => track.stop())
+
+				video.srcObject = null
+				video.removeAttribute('src')
+
+				texture.dispose()
+			}
+		}
+	})
 
 	const context: Context = {
 		video,

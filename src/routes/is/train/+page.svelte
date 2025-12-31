@@ -1,15 +1,8 @@
 <script lang="ts">
 	import { T, useTask, useThrelte } from '@threlte/core'
 	import { useGltf, Float } from '@threlte/extras'
-	import {
-		Group,
-		Fog,
-		RectAreaLightNode,
-		Object3D,
-		DirectionalLight,
-	} from 'three/webgpu'
+	import { Group, Fog, RectAreaLightNode, Object3D } from 'three/webgpu'
 	import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js'
-
 	import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js'
 
 	RectAreaLightNode.setLTC(RectAreaLightTexturesLib.init())
@@ -20,8 +13,8 @@
 
 	$effect(() => {
 		scene.fog = new Fog('black')
-		scene.fog.far = 100
 		scene.fog.near = 80
+		scene.fog.far = 200
 		return () => (scene.fog = null)
 	})
 
@@ -32,13 +25,11 @@
 	const trainHeadGLTF = useGltf('/glb/HighSpeed_Front.glb')
 	const trainCarGLTF = useGltf('/glb/HighSpeed_Wagon.glb')
 	const trackGLTF = useGltf('/glb/RailwayTrack_Straight.glb')
-
 	const tree1GLTF = useGltf('/glb/Tree_1.glb')
 
 	const trainHead = $derived($trainHeadGLTF?.scene)
 	const trainCar = $derived($trainCarGLTF?.scene)
 	const track = $derived($trackGLTF?.scene)
-
 	const tree1 = $derived($tree1GLTF?.scene)
 
 	const tracks = $derived(
@@ -47,7 +38,6 @@
 	const trainCars = $derived(
 		trainCar ? Array.from({ length: 4 }).map(() => trainCar.clone()) : undefined
 	)
-
 	const trees1 = $derived(
 		tree1 ? Array.from({ length: 20 }).map(() => tree1.clone()) : undefined
 	)
@@ -156,7 +146,7 @@
 		{/snippet}
 	</T.RectAreaLight>
 
-	<T.AmbientLight intensity={0.05} />
+	<T.AmbientLight intensity={1} />
 
 	<T
 		is={directionalLightTarget}
@@ -239,7 +229,7 @@
 				rotationIntensity={0.001}
 				rotationSpeed={20}
 			>
-				<T is={trainCar} />
+				<T is={trainCar}></T>
 			</Float>
 		{/each}
 	{/if}
@@ -259,5 +249,5 @@
 
 <T.Mesh position={[0, -0.2, 0]}>
 	<T.BoxGeometry args={[10_000, 0.1, 200]} />
-	<T.MeshToonMaterial color="white" />
+	<T.MeshToonMaterial color="black" />
 </T.Mesh>

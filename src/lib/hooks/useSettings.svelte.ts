@@ -10,6 +10,7 @@ interface Context {
 	showFacts: PersistedState<boolean>
 	showDebug: PersistedState<boolean>
 	showCostco: PersistedState<boolean>
+	showWikipedia: PersistedState<boolean>
 }
 
 export const provideSettings = () => {
@@ -18,6 +19,7 @@ export const provideSettings = () => {
 	const showFacts = new PersistedState('show-facts', false)
 	const showDebug = new PersistedState('show-debug', false)
 	const showCostco = new PersistedState('show-costco', false)
+	const showWikipedia = new PersistedState('show-wikipedia', false)
 
 	useKeybinding(Keybindings.QRCode, () => {
 		showQR.current = !showQR.current
@@ -38,12 +40,18 @@ export const provideSettings = () => {
 		() => (showDebug.current = !showDebug.current)
 	)
 
+	useKeybinding(
+		Keybindings.Wikipedia,
+		() => (showWikipedia.current = !showWikipedia.current)
+	)
+
 	setContext<Context>(key, {
 		showTrackInfo,
 		showQR,
 		showFacts,
 		showDebug,
 		showCostco,
+		showWikipedia,
 	})
 }
 

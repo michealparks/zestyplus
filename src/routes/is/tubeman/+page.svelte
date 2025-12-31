@@ -13,14 +13,14 @@
 	let damping = 2
 	let ropeEnd = $state<Vector3Tuple>([0, 4, 1])
 
-	let torsoPositions: Float32Array | undefined = $state()
-	let leftArmPositions: Float32Array | undefined = $state()
+	let torsoPositions = $state<Float32Array>()
+	let leftArmPositions = $state<Float32Array>()
 
-	let torsoRigidBody: RapierRigidBody | undefined = $state()
-	let startLeftArmRigidbody: RapierRigidBody | undefined = $state()
-	let startRightArmRigidbody: RapierRigidBody | undefined = $state()
-	let endLeftArmRigidbody: RapierRigidBody | undefined = $state()
-	let endRightArmRigidbody: RapierRigidBody | undefined = $state()
+	let torsoRigidBody = $state<RapierRigidBody>()
+	let startLeftArmRigidbody = $state<RapierRigidBody>()
+	let startRightArmRigidbody = $state<RapierRigidBody>()
+	let endLeftArmRigidbody = $state<RapierRigidBody>()
+	let endRightArmRigidbody = $state<RapierRigidBody>()
 
 	setInterval(() => {
 		// Torso
@@ -59,6 +59,7 @@
 </T.PerspectiveCamera>
 
 <Debug />
+
 <!-- torso -->
 <Rope
 	bind:positions={torsoPositions}
