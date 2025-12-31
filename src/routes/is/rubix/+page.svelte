@@ -189,6 +189,8 @@
 	// Scene Pass
 
 	$effect(() => {
+		if (!$camera) return
+
 		const scenePass = pass(scene, $camera)
 		const sceneDepth = scenePass.getTextureNode('depth')
 
@@ -217,14 +219,16 @@
 
 	//
 
-	const numberCubes = 20
+	const numInstances = 200
 	const mesh = new InstancedMesh(
-		new OctahedronGeometry(0.1),
+		new OctahedronGeometry(1),
 		new MeshStandardNodeMaterial({
 			roughness: 0.05,
+			color: 'white',
 		}),
-		numberCubes
+		numInstances
 	)
+	mesh.frustumCulled = false
 
 	const cameraMatrix = new Matrix4()
 		.makeRotationX(0.005)
@@ -232,7 +236,6 @@
 		.multiply(new Matrix4().makeRotationZ(0.005))
 	const matrix = new Matrix4()
 
-	const cubes: Mesh[] = []
 	let index = 0
 
 	// Total voxels inside a cube of radius r (side = 2r+1)
@@ -325,7 +328,7 @@
 
 	const color = new Color().setHSL(Math.random(), 0.8, 1)
 
-	while (index < numberCubes) {
+	while (index < numInstances) {
 		cubeTranslation(index, 1)
 		mesh.setMatrixAt(index, matrix)
 
@@ -340,7 +343,7 @@
 		x += dt
 		camera.current.applyMatrix4(cameraMatrix)
 
-		for (let index = 0; index < numberCubes; index += 1) {
+		for (let index = 0; index < numInstances; index += 1) {
 			cubeTranslation(
 				index,
 				1 + (Math.sin(x) * 0.01 * analyser.logSmooth01[32]) / 30
@@ -351,13 +354,11 @@
 		mesh.instanceMatrix.needsUpdate = true
 
 		if (analyser.level >= 0.3) {
-			// const cube = cubes[colorIndex]
 			const newColor = hueShift(color, colorIndex2)
-			// cube.material.color.set(newColor)
 			mesh.setColorAt(colorIndex, newColor)
 			colorIndex += 1
 			colorIndex2 += 10
-			colorIndex %= cubes.length
+			colorIndex %= numInstances
 		}
 
 		if (mesh.instanceColor) {
@@ -400,6 +401,4 @@
 <T is={rectLight2}></T>
 <T is={rectLight3}></T>
 
-<!-- <T is={volumetricMesh}></T> -->
-
-<!-- <Lightformer /> -->
+<T is={volumetricMesh}></T>

@@ -5,6 +5,7 @@
 	import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js'
 	import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js'
 	import { useAnalyser } from '$lib'
+	import Stars from './stars.svelte'
 
 	RectAreaLightNode.setLTC(RectAreaLightTexturesLib.init())
 
@@ -15,8 +16,8 @@
 
 	$effect(() => {
 		scene.fog = new Fog('black')
-		scene.fog.near = 80
-		scene.fog.far = 200
+		scene.fog.near = 100
+		scene.fog.far = 180
 		return () => (scene.fog = null)
 	})
 
@@ -36,6 +37,7 @@
 
 	const numTracks = 15
 	const numCars = 7
+	const numTrees = 200
 
 	const tracks = $derived(
 		track
@@ -48,7 +50,9 @@
 			: undefined
 	)
 	const trees1 = $derived(
-		tree1 ? Array.from({ length: 40 }).map(() => tree1.clone()) : undefined
+		tree1
+			? Array.from({ length: numTrees }).map(() => tree1.clone())
+			: undefined
 	)
 
 	let currentIndex = 0
@@ -194,6 +198,16 @@
 </script>
 
 <T is={trainRoot}>
+	<T.Mesh position={[0, -0.2, 0]}>
+		<T.CylinderGeometry args={[900, 900, 0.1]} />
+		<T.MeshStandardMaterial
+			color="#111"
+			fog={false}
+		/>
+	</T.Mesh>
+
+	<Stars />
+
 	{#each { length: numCars + 1 }, index}
 		<T.RectAreaLight
 			width={6.8}
@@ -329,8 +343,3 @@
 		<T is={tree} />
 	{/each}
 {/if}
-
-<T.Mesh position={[0, -0.2, 0]}>
-	<T.BoxGeometry args={[10_000, 0.1, 200]} />
-	<T.MeshToonMaterial color="#222" />
-</T.Mesh>
