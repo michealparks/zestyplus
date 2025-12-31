@@ -77,7 +77,7 @@
 					<h4 class="text-sm"><strong>Keybindings</strong></h4>
 					{#each [['←', 'Previous page'], ['→', 'Next page'], ['F', 'Fullscreen'], ['C', 'Costco mode']] as [key, label] (label)}
 						<div class="flex w-full items-center gap-2">
-							<kbd class="kbd">{key}</kbd>
+							<kbd class="kbd h-6 w-6 font-mono text-black">{key}</kbd>
 							<div>
 								{label}
 							</div>
