@@ -4,11 +4,13 @@
 	import { Group, Fog, RectAreaLightNode, Object3D } from 'three/webgpu'
 	import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js'
 	import { RectAreaLightTexturesLib } from 'three/addons/lights/RectAreaLightTexturesLib.js'
+	import { useAnalyser } from '$lib'
 
 	RectAreaLightNode.setLTC(RectAreaLightTexturesLib.init())
 
-	let debug = true
+	let debug = false
 
+	const analyser = useAnalyser()
 	const { scene } = useThrelte()
 
 	$effect(() => {
@@ -32,22 +34,60 @@
 	const track = $derived($trackGLTF?.scene)
 	const tree1 = $derived($tree1GLTF?.scene)
 
+	const numTracks = 15
+	const numCars = 7
+
 	const tracks = $derived(
-		track ? Array.from({ length: 15 }).map(() => track.clone()) : undefined
+		track
+			? Array.from({ length: numTracks }).map(() => track.clone())
+			: undefined
 	)
 	const trainCars = $derived(
-		trainCar ? Array.from({ length: 4 }).map(() => trainCar.clone()) : undefined
+		trainCar
+			? Array.from({ length: numCars }).map(() => trainCar.clone())
+			: undefined
 	)
 	const trees1 = $derived(
-		tree1 ? Array.from({ length: 20 }).map(() => tree1.clone()) : undefined
+		tree1 ? Array.from({ length: 40 }).map(() => tree1.clone()) : undefined
 	)
 
 	let currentIndex = 0
 	let currentPosition = -18
 
+	let treeCurrentIndex = 0
+	let treeCurrentPosition = -32
+
 	const setCastShadow = (obj: Object3D) => {
 		obj.castShadow = true
 		obj.receiveShadow = true
+	}
+
+	const backSideChance = 1 / 3
+
+	const placeTree = (tree: Object3D, x: number) => {
+		tree.position.x = x
+
+		// Back side = mostly out of camera (positive z)
+		// Camera-facing side = in front of camera (negative z)
+		const isBackSide = Math.random() < backSideChance
+
+		if (isBackSide) {
+			// 👈 other side of the track (behind it, mostly off-camera)
+			// small band close to the track
+			const minDist = 5
+			const maxDist = 20
+			const dist = minDist + Math.random() * (maxDist - minDist)
+			tree.position.z = dist // +z = back side
+		} else {
+			// 👈 camera side: keep them more spread out & further out
+			const minDist = 20
+			const maxDist = 90
+			const dist = minDist + Math.random() * (maxDist - minDist)
+			tree.position.z = -dist // -z = toward camera
+		}
+
+		tree.scale.setScalar(Math.random() * 0.25 + 0.75)
+		tree.rotation.y = Math.random() * 2 * Math.PI
 	}
 
 	$effect(() => {
@@ -83,18 +123,16 @@
 	$effect(() => {
 		if (trees1) {
 			let i = -32
-			let sign = 1
 
 			for (const tree of trees1) {
-				sign = -sign
-				tree.position.x = i
-				tree.position.z = (Math.random() + 0.2) * 100 * sign
-				tree.scale.setScalar(Math.random() * 0.25 + 0.75)
-				tree.rotation.y = Math.random() * 2 * Math.PI
+				placeTree(tree, i)
 				i += 18
 
 				tree.traverse(setCastShadow)
 			}
+
+			treeCurrentIndex = trees1.length
+			treeCurrentPosition = -32
 		}
 	})
 
@@ -123,30 +161,62 @@
 			}
 		}
 	})
+
+	useTask(() => {
+		if (!trees1) return
+
+		const { x } = trainRoot.position
+
+		if (x < treeCurrentPosition + bufferSpace) {
+			treeCurrentIndex -= 1
+			treeCurrentPosition -= 18
+
+			const tree = trees1[treeCurrentIndex]
+
+			// 👇 reuse the same placement logic as initialization
+			placeTree(tree, treeCurrentPosition)
+
+			if (treeCurrentIndex === 0) {
+				treeCurrentIndex = trees1.length
+			}
+		}
+	})
+
+	const loudness = $state(
+		Array.from({ length: numCars + 1 }).fill(0) as number[]
+	)
+
+	useTask(() => {
+		for (let i = 0, j = 0, l = loudness.length; i < l; i += 1, j += 2) {
+			loudness[i] = analyser.spectrum01[j]
+		}
+	})
 </script>
 
 <T is={trainRoot}>
-	<T.RectAreaLight
-		width={6.8}
-		height={0.3}
-		color="#FFD700"
-		intensity={20}
-		position={[0.75, 1, 1.02]}
-		oncreate={(ref) => {
-			ref.lookAt(0.75, 1, -2)
-		}}
-	>
-		{#snippet children({ ref })}
-			{#if debug}
-				<T
-					is={RectAreaLightHelper}
-					args={[ref]}
-				/>
-			{/if}
-		{/snippet}
-	</T.RectAreaLight>
+	{#each { length: numCars + 1 }, index}
+		<T.RectAreaLight
+			width={6.8}
+			height={0.3}
+			color="#FFD700"
+			intensity={150 * loudness[index]}
+			position={[0.75 + index * 11.3, 1, 1.02]}
+			oncreate={(ref) => {
+				ref.lookAt(0.75 + index * 11.3, 1, -2)
+			}}
+		>
+			{#snippet children({ ref })}
+				{#if debug}
+					<T
+						is={RectAreaLightHelper}
+						args={[ref]}
+					/>
+				{/if}
+			{/snippet}
+		</T.RectAreaLight>
+	{/each}
 
-	<T.AmbientLight intensity={1} />
+	<T.AmbientLight intensity={0.2} />
 
 	<T
 		is={directionalLightTarget}
@@ -155,12 +225,20 @@
 	<T.DirectionalLight
 		intensity={1}
 		castShadow
-		position={[1, 1, 0]}
+		color="#FFF8DE"
+		position={[-5, 8, 5]}
+		shadow.camera.left={-50}
+		shadow.camera.right={50}
+		shadow.camera.top={50}
+		shadow.camera.bottom={-50}
+		shadow.mapSize.width={8192}
+		shadow.mapSize.height={8192}
 		target={directionalLightTarget}
 	>
 		{#snippet children({ ref })}
 			{#if debug}
 				<T.DirectionalLightHelper
+					attach={scene}
 					args={[ref]}
 					oncreate={(helper) => {
 						requestAnimationFrame(function frame() {
@@ -168,6 +246,11 @@
 							helper.update()
 						})
 					}}
+				/>
+
+				<T.CameraHelper
+					attach={scene}
+					args={[ref.shadow.camera]}
 				/>
 			{/if}
 		{/snippet}
@@ -249,5 +332,5 @@
 
 <T.Mesh position={[0, -0.2, 0]}>
 	<T.BoxGeometry args={[10_000, 0.1, 200]} />
-	<T.MeshToonMaterial color="black" />
+	<T.MeshToonMaterial color="#222" />
 </T.Mesh>
