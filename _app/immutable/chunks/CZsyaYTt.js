@@ -1,0 +1,11 @@
+import"./DsnmJJEf.js";import"./CKTo1a-5.js";import{a3 as v,a5 as m,aw as b,a7 as u,a8 as h,a9 as o,au as t,av as s,aL as x}from"./B1dEFQYF.js";import{s as l}from"./CCcG1J_J.js";import{i as _}from"./B9_nUCPG.js";import{b as y,r as k}from"./c4fN4Pt8.js";const w="";function c(...a){return y+w+k(a[0],a[1])}var z=m(`<div class="absolute top-0 left-0 grid h-screen w-screen place-content-center" style="
+		background-image: radial-gradient(at 100% 0%,hsla(135,34%,70%,.14) 0px,transparent 50%),radial-gradient(at 85% 100%,hsla(31,83%,50%,.14) 0px,transparent 50%);
+		background-attachment: fixed;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	"><div class="flex max-w-120 flex-col gap-2 p-4 text-white"><p><strong class="text-error-500">zesty.plus</strong> is a music visualizer,
+			inspired by what iTunes - or winamp - did back in the days of yore. What
+			it does is simple: analyze incoming microphone data and produce fun
+			doodles from it. It also has optional music service integration features,
+			but that stuff isn't required if you just want a <strong class="text-primary-500">pure</strong>, <strong class="text-warning-500">organic</strong>, <strong class="text-success-500">regenerative</strong> experience.</p> <div class="flex gap-2"><a class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-linear-to-br"><span class="text-xs">←</span></a> <a class="btn btn-sm variant-gradient-warning-error flex items-center gap-1 bg-linear-to-br"><span class="text-xs">get zesty</span> 🤌</a></div> <div class="flex flex-col gap-2 pt-12 text-sm"><div>Emojis by <a class="code" href="https://emojikitchen.dev/" target="_blank">Emoji Kitchen</a></div> <div>Hot dog model by <a class="code" href="https://skfb.ly/oqMWM" target="_blank">TadenStar</a></div> <div>Powered by <a class="code" target="_blank" href="https://svelte.dev">Svelte</a> and <a class="code" target="_blank" href="https://threlte.xyz">Threlte</a></div></div></div></div>`);function j(a,d){v(d,!1),_();var e=z(),r=t(e),i=o(t(r),2),n=t(i),p=o(n,2);s(i),x(2),s(r),s(e),b((g,f)=>{l(n,"href",g),l(p,"href",f)},[()=>c("/"),()=>c("/is/lines")]),u(a,e),h()}const P=Object.freeze(Object.defineProperty({__proto__:null,default:j},Symbol.toStringTag,{value:"Module"}));export{j as _,P as a};
