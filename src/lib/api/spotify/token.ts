@@ -33,7 +33,7 @@ export const token: Token = {
 		return localStorage.getItem('refresh_token') ?? ''
 	},
 	get expiresIn() {
-		return localStorage.getItem('refresh_in') ?? ''
+		return localStorage.getItem('expires_in') ?? ''
 	},
 	get expires() {
 		return localStorage.getItem('expires') ?? ''

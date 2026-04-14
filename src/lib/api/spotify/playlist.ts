@@ -1,3 +1,4 @@
+import { fetchAuthCode } from './auth.svelte'
 import { token } from './token'
 
 // https://api.spotify.com/v1/playlists/{playlist_id}
@@ -11,6 +12,16 @@ export const fetchPlaylistDetails = async (playlistID: string) => {
 				'Content-Type': 'application/json',
 			},
 		})
+
+		if (response.status === 401) {
+			const { state } = await fetchAuthCode()
+
+			if (state === 'logged-in') {
+				return fetchPlaylistDetails(playlistID)
+			}
+
+			return
+		}
 
 		if (!response.ok) {
 			console.error(

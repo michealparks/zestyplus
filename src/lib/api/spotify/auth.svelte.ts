@@ -17,6 +17,10 @@ interface LoggedOutState {
 	state: 'logged-out'
 }
 
+interface ErrorState {
+	state: 'error'
+}
+
 const sleep = async (ms: number) =>
 	new Promise((resolve) => {
 		setTimeout(resolve, ms)
@@ -116,9 +120,11 @@ const getUserData = async () => {
 	return response.json()
 }
 
-export const fetchAuthCode = async (): Promise<
-	LoggedInState | LoggedOutState
-> => {
+const MAX_REFRESH_RETRIES = 3
+
+export const fetchAuthCode = async (
+	retries = 0,
+): Promise<LoggedInState | LoggedOutState | ErrorState> => {
 	// On page load, try to fetch auth code from current browser search URL
 	const args = new URLSearchParams(window.location.search)
 	const code = args.get('code')
@@ -126,6 +132,11 @@ export const fetchAuthCode = async (): Promise<
 	// If we find a code, we're in a callback, do a token exchange
 	if (code) {
 		const nextToken = await getToken(code)
+
+		if (nextToken.error) {
+			return { state: 'logged-out' } as const
+		}
+
 		token.save(nextToken)
 
 		// Remove code from URL so we can refresh correctly.
@@ -142,6 +153,10 @@ export const fetchAuthCode = async (): Promise<
 
 		// Handle expired
 		if (userData.error?.status === 401) {
+			if (retries >= MAX_REFRESH_RETRIES) {
+				return { state: 'error' } as const
+			}
+
 			const error = await refreshToken()
 
 			if (error) {
@@ -149,7 +164,7 @@ export const fetchAuthCode = async (): Promise<
 			}
 
 			await sleep(2000)
-			return fetchAuthCode()
+			return fetchAuthCode(retries + 1)
 		}
 
 		return { state: 'logged-in', userData } as const
@@ -165,7 +180,11 @@ export const login = () => {
 }
 
 export const logout = async () => {
-	localStorage.clear()
+	localStorage.removeItem('access_token')
+	localStorage.removeItem('refresh_token')
+	localStorage.removeItem('expires_in')
+	localStorage.removeItem('expires')
+	localStorage.removeItem('code_verifier')
 	window.location.href = redirectUrl
 }
 
@@ -175,7 +194,7 @@ interface Context {
 	token: Token
 	login: () => Promise<void>
 	logout: () => Promise<void>
-	authState: 'pending' | 'logged-in' | 'logged-out'
+	authState: 'pending' | 'logged-in' | 'logged-out' | 'error'
 }
 
 export const provideSpotify = () => {

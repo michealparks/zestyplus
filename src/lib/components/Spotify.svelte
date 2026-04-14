@@ -29,5 +29,8 @@
 		{@render Button('Logout Spotify', () => spotify.logout())}
 	{:else if spotify.authState === 'logged-out'}
 		{@render Button('Connect Spotify', () => spotify.login())}
+	{:else if spotify.authState === 'error'}
+		<p class="text-xs text-red-400">Spotify connection lost</p>
+		{@render Button('Reconnect Spotify', () => spotify.login())}
 	{/if}
 </div>

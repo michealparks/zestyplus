@@ -213,7 +213,7 @@
 			width={6.8}
 			height={0.3}
 			color="#FFD700"
-			intensity={150 * loudness[index]}
+			intensity={75 * loudness[index]}
 			position={[0.75 + index * 11.3, 1, 1.02]}
 			oncreate={(ref) => {
 				ref.lookAt(0.75 + index * 11.3, 1, -2)
