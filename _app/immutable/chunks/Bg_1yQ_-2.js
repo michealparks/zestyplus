@@ -1,0 +1,1 @@
+import{n as e}from"./4Et7J08v.js";import{d as t}from"./BmifkEVA.js";import{B as n,F as r,U as i,W as a,g as o,h as s,l as c,t as l}from"./D6Z1TCtf2.js";var u=u=>{let{renderer:d}=t(),f=new e,p=r(u),m=n(a(640,480),`vec2`),h=n(20,`float`),g=i();return f.colorNode=l(()=>{let e=h.div(m),t=e.mul(c(g.div(e)));return o(p.sample(t),s,.5)})(),f};export{u as t};

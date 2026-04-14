@@ -1,0 +1,1 @@
+import{t as e}from"./BcCypls2.js";var t=e({prerender:()=>!0,ssr:()=>!1});export{t};

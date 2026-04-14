@@ -1,0 +1,1 @@
+import{t as e}from"./Bg_1yQ_-2.js";export{e as createShader};

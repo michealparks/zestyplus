@@ -1,0 +1,1 @@
+import{t as e}from"../chunks/DX05iVIj.js";export{e as component};

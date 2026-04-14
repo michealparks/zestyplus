@@ -1,0 +1,1 @@
+import{$t as e,Y as t}from"./CCKu-dsS.js";var n=class extends e{constructor(e=.5,n=12,r=new t,i=``){super(),this.strength=e,this.subtract=n,this.color=r,this.animating=i}};export{n as t};

@@ -1,0 +1,1 @@
+function e(e,t,n){return(e-t)/(n-t)}function t(e,t,n,r=10){let i=(e-t)/(n-t);return Math.log1p(i*(r-1))/Math.log1p(r-1)}export{t as n,e as t};
